@@ -46,6 +46,24 @@
     <orderEntry type="library" exported="" name="Gradle: commons-lang-2.6" level="project" />
     <orderEntry type="library" exported="" name="Gradle: commons-logging-1.1.1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: servo-core-0.7.5" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: karyon-core-2.2.00-ALPHA3" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: karyon-servo-2.2.00-ALPHA3" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: karyon-governator-2.2.00-ALPHA3" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: governator-1.2.20" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: guice-grapher-3.0" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: jsr166y-1.7.0" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: guice-3.0" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: xbean-finder-3.11.1" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: asm-all-3.2" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: guice-multibindings-3.0" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: xbean-bundleutils-3.11.1" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: hibernate-validator-4.1.0.Final" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: guice-assistedinject-3.0" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: aopalliance-1.0" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: cglib-2.2.1-v20090111" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: validation-api-1.0.0.GA" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: asm-3.1" level="project" />
+    <orderEntry type="library" exported="" scope="RUNTIME" name="Gradle: slf4j-simple-1.7.0" level="project" />
   </component>
   <component name="org.twodividedbyzero.idea.findbugs">
     <option name="_basePreferences">
