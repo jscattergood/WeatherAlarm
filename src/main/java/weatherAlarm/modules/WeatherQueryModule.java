@@ -87,10 +87,10 @@ public class WeatherQueryModule extends AbstractModule {
             }
             cachedRequestTemplate = group.newTemplateBuilder("getWeatherByWoeid")
                     .withMethod("GET")
-                    .withUriTemplate("/v1/public/yql?" +
-                            "q=" + encodedYql + "{woeid}&" +
-                            "format=json&" +
-                            "env=" + encodedEnv)
+                    .withUriTemplate("/v1/public/yql" +
+                            "?q=" + encodedYql + "{woeid}" +
+                            "&format=json" +
+                            "&env=" + encodedEnv)
                     .build();
         }
         return cachedRequestTemplate;
