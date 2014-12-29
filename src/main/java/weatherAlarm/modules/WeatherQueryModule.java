@@ -9,12 +9,15 @@ import com.netflix.ribbon.RibbonRequest;
 import com.netflix.ribbon.http.HttpRequestTemplate;
 import com.netflix.ribbon.http.HttpResourceGroup;
 import io.netty.buffer.ByteBuf;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rx.Observable;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.concurrent.TimeUnit;
 
@@ -23,50 +26,37 @@ import java.util.concurrent.TimeUnit;
  */
 public class WeatherQueryModule extends AbstractModule {
     private static final Logger logger = LoggerFactory.getLogger(WeatherQueryModule.class);
+    public static final int DEFAULT_QUERY_INTERVAL = 15;
 
     private String locationWOEID;
-    private String weatherApiKey;
+    private HttpResourceGroup cachedResourceGroup;
+    private HttpRequestTemplate<ByteBuf> cachedRequestTemplate;
 
     @Override
     protected void configure() {
-        weatherApiKey = System.getProperty("weatherApiKey");
-        if (weatherApiKey == null) {
-            logger.error("No weather API key defined");
-        }
-
-        locationWOEID = System.getProperty("woeid");
+        locationWOEID = System.getProperty("weatherAlarm.locationWoeid");
         if (locationWOEID == null) {
             logger.error("No location WOEID defined");
         }
+        final String intervalProperty = System.getProperty("weatherAlarm.weatherServiceQueryInterval");
+        long queryInterval;
+        if (intervalProperty != null) {
+            queryInterval = Long.valueOf(intervalProperty);
+        } else {
+            logger.error("No query interval defined. Using default " + DEFAULT_QUERY_INTERVAL + " minutes");
+            queryInterval = DEFAULT_QUERY_INTERVAL;
+        }
 
-        Observable.interval(1, TimeUnit.MINUTES, Schedulers.newThread()).forEach(new Action1<Long>() {
+        Observable.interval(queryInterval, TimeUnit.MINUTES, Schedulers.newThread()).forEach(new Action1<Long>() {
             @Override
             public void call(Long inLong) {
-                callWeatherService();
+                requestWeatherData();
             }
         });
     }
 
-    private void callWeatherService() {
-        HttpResourceGroup group = Ribbon.createHttpResourceGroup("weatherServiceClient",
-                ClientOptions.create()
-                        .withMaxAutoRetries(3)
-                        .withConfigurationBasedServerList("query.yahooapis.com"));
-
-        HttpRequestTemplate<ByteBuf> weatherQueryTemplate = group.newTemplateBuilder("weatherByWoeid")
-                .withMethod("GET")
-                .withUriTemplate("/v1/public/yql?q={yql}&format={format}&env={env}")
-                .build();
-
-        RibbonRequest<ByteBuf> request = weatherQueryTemplate.requestBuilder()
-                .withRequestProperty("yql", "select item.condition from weather.forecast where woeid = "+ locationWOEID)
-                .withRequestProperty("format", "json")
-                .withRequestProperty("env", "store://datatables.org/alltableswithkeys")
-                .build();
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("Request built: " + request.toString());
-        }
+    private void requestWeatherData() {
+        RibbonRequest<ByteBuf> request = buildRequest();
 
         Observable<ByteBuf> result = request.observe();
         result.subscribe(new Action1<ByteBuf>() {
@@ -75,6 +65,45 @@ public class WeatherQueryModule extends AbstractModule {
                 logger.debug("Received response:" + byteBuf.toString(Charset.defaultCharset()));
             }
         });
+    }
+
+    private RibbonRequest<ByteBuf> buildRequest() {
+        HttpRequestTemplate<ByteBuf> weatherQueryTemplate = getRequestTemplate();
+        return weatherQueryTemplate.requestBuilder()
+                .withRequestProperty("woeid", locationWOEID)
+                .build();
+    }
+
+    private HttpRequestTemplate<ByteBuf> getRequestTemplate() {
+        if (cachedRequestTemplate == null) {
+            HttpResourceGroup group = getResourceGroup();
+            String encodedYql = StringUtils.EMPTY;
+            String encodedEnv = StringUtils.EMPTY;
+            try {
+                encodedYql = URLEncoder.encode("select item.condition from weather.forecast where woeid = ", "UTF-8");
+                encodedEnv = URLEncoder.encode("store://datatables.org/alltableswithkeys", "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                logger.error(e.getMessage());
+            }
+            cachedRequestTemplate = group.newTemplateBuilder("getWeatherByWoeid")
+                    .withMethod("GET")
+                    .withUriTemplate("/v1/public/yql?" +
+                            "q=" + encodedYql + "{woeid}&" +
+                            "format=json&" +
+                            "env=" + encodedEnv)
+                    .build();
+        }
+        return cachedRequestTemplate;
+    }
+
+    private HttpResourceGroup getResourceGroup() {
+        if (cachedResourceGroup == null) {
+            cachedResourceGroup = Ribbon.createHttpResourceGroup("yahooWeatherService",
+                    ClientOptions.create()
+                            .withMaxAutoRetries(3)
+                            .withConfigurationBasedServerList("query.yahooapis.com"));
+        }
+        return cachedResourceGroup;
     }
 
     public static LifecycleInjectorBuilderSuite asSuite() {

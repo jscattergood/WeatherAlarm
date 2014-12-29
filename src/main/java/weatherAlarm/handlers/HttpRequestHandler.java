@@ -15,18 +15,18 @@ public class HttpRequestHandler implements RequestHandler<ByteBuf, ByteBuf> {
     private final String uri;
     private final RequestHandler<ByteBuf, ByteBuf> uriHandler;
 
-    public HttpRequestHandler(String inUri, RequestHandler<ByteBuf, ByteBuf> inRequestHandler) {
-        this.uri = inUri;
-        this.uriHandler = inRequestHandler;
+    public HttpRequestHandler(String uri, RequestHandler<ByteBuf, ByteBuf> requestHandler) {
+        this.uri = uri;
+        this.uriHandler = requestHandler;
     }
 
     @Override
-    public Observable<Void> handle(HttpServerRequest<ByteBuf> inRequest, HttpServerResponse<ByteBuf> inResponse) {
-        if (inRequest.getUri().startsWith(uri)) {
-            return uriHandler.handle(inRequest, inResponse);
+    public Observable<Void> handle(HttpServerRequest<ByteBuf> request, HttpServerResponse<ByteBuf> response) {
+        if (request.getUri().startsWith(uri)) {
+            return uriHandler.handle(request, response);
         } else {
-            inResponse.setStatus(HttpResponseStatus.NOT_FOUND);
-            return inResponse.close();
+            response.setStatus(HttpResponseStatus.NOT_FOUND);
+            return response.close();
         }
     }
 }
