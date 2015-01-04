@@ -1,8 +1,5 @@
 package weatherAlarm.modules;
 
-import com.google.inject.AbstractModule;
-import com.netflix.governator.guice.LifecycleInjectorBuilder;
-import com.netflix.governator.guice.LifecycleInjectorBuilderSuite;
 import com.netflix.ribbon.ClientOptions;
 import com.netflix.ribbon.Ribbon;
 import com.netflix.ribbon.RibbonRequest;
@@ -13,8 +10,9 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rx.Observable;
-import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import weatherAlarm.events.WeatherConditionEvent;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -22,11 +20,14 @@ import java.nio.charset.Charset;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * This class is responsible for querying the Weather Service for the current conditions
+ *
  * @author <a href="mailto:john.scattergood@navis.com">John Scattergood</a> 12/28/2014
  */
-public class WeatherQueryModule extends AbstractModule {
+public class WeatherQueryModule extends BaseModule {
     private static final Logger logger = LoggerFactory.getLogger(WeatherQueryModule.class);
-    public static final int DEFAULT_QUERY_INTERVAL = 15;
+    private static final long SECS_PER_MIN = 60;
+    private static final long DEFAULT_QUERY_INTERVAL = 15 * SECS_PER_MIN;
 
     private String locationWOEID;
     private HttpResourceGroup cachedResourceGroup;
@@ -43,28 +44,21 @@ public class WeatherQueryModule extends AbstractModule {
         if (intervalProperty != null) {
             queryInterval = Long.valueOf(intervalProperty);
         } else {
-            logger.error("No query interval defined. Using default " + DEFAULT_QUERY_INTERVAL + " minutes");
+            logger.error("No query interval defined. Using default " + DEFAULT_QUERY_INTERVAL + " seconds");
             queryInterval = DEFAULT_QUERY_INTERVAL;
         }
 
-        Observable.interval(queryInterval, TimeUnit.MINUTES, Schedulers.newThread()).forEach(new Action1<Long>() {
-            @Override
-            public void call(Long inLong) {
-                requestWeatherData();
-            }
-        });
+        Observable.interval(queryInterval, TimeUnit.SECONDS,
+                Schedulers.newThread()).forEach(inLong -> requestWeatherData());
     }
 
     private void requestWeatherData() {
         RibbonRequest<ByteBuf> request = buildRequest();
-
-        Observable<ByteBuf> result = request.observe();
-        result.subscribe(new Action1<ByteBuf>() {
-            @Override
-            public void call(ByteBuf byteBuf) {
-                logger.debug("Received response:" + byteBuf.toString(Charset.defaultCharset()));
-            }
-        });
+        request.observe()
+                .map(mapJsonToEvent())
+                .concatWith(Observable.never())
+                .doOnNext(subject::onNext) // doOnNext so subject never completes
+                .subscribe();
     }
 
     private RibbonRequest<ByteBuf> buildRequest() {
@@ -106,12 +100,11 @@ public class WeatherQueryModule extends AbstractModule {
         return cachedResourceGroup;
     }
 
-    public static LifecycleInjectorBuilderSuite asSuite() {
-        return new LifecycleInjectorBuilderSuite() {
-            @Override
-            public void configure(LifecycleInjectorBuilder builder) {
-                builder.withAdditionalModules(new WeatherQueryModule());
-            }
+    private Func1<ByteBuf, WeatherConditionEvent> mapJsonToEvent() {
+        return byteBuf -> {
+            final String result = byteBuf.toString(Charset.defaultCharset());
+            logger.debug("Received response:" + result);
+            return new WeatherConditionEvent(result);
         };
     }
 }

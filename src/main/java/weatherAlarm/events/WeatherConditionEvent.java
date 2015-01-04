@@ -1,0 +1,46 @@
+package weatherAlarm.events;
+
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import weatherAlarm.model.WeatherConditions;
+
+import java.io.IOException;
+
+/**
+ * @author <a href="mailto:john.scattergood@navis.com">John Scattergood</a> 1/3/2015
+ */
+public class WeatherConditionEvent implements IModuleEvent {
+    public static final Logger logger = LoggerFactory.getLogger(WeatherConditionEvent.class);
+    private WeatherConditions conditions;
+
+    public WeatherConditionEvent(String jsonString) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            JsonNode root = mapper.readTree(jsonString);
+            conditions = new WeatherConditions();
+            conditions.setTemperature(root
+                            .get("query")
+                            .get("results")
+                            .get("channel")
+                            .get("item")
+                            .get("condition")
+                            .get("temp")
+                            .asInt()
+            );
+        } catch (IOException e) {
+            logger.error("Could not create WeatherConditionEvent from JSON string", e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    public WeatherConditions getConditions() {
+        return conditions;
+    }
+
+    @Override
+    public String toString() {
+        return "WeatherConditionEvent[conditions=" + getConditions() + "]";
+    }
+}
