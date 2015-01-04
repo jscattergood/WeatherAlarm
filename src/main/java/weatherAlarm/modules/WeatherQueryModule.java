@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import rx.Observable;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import weatherAlarm.events.EventStream;
+import weatherAlarm.events.IModuleEvent;
 import weatherAlarm.events.WeatherConditionEvent;
 
 import java.io.UnsupportedEncodingException;
@@ -24,7 +26,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author <a href="mailto:john.scattergood@navis.com">John Scattergood</a> 12/28/2014
  */
-public class WeatherQueryModule extends BaseModule {
+public class WeatherQueryModule extends EventModule {
     private static final Logger logger = LoggerFactory.getLogger(WeatherQueryModule.class);
     private static final long SECS_PER_MIN = 60;
     private static final long DEFAULT_QUERY_INTERVAL = 15 * SECS_PER_MIN;
@@ -32,6 +34,10 @@ public class WeatherQueryModule extends BaseModule {
     private String locationWOEID;
     private HttpResourceGroup cachedResourceGroup;
     private HttpRequestTemplate<ByteBuf> cachedRequestTemplate;
+
+    public WeatherQueryModule(EventStream stream) {
+        super(stream);
+    }
 
     @Override
     protected void configure() {
@@ -54,11 +60,10 @@ public class WeatherQueryModule extends BaseModule {
 
     private void requestWeatherData() {
         RibbonRequest<ByteBuf> request = buildRequest();
-        request.observe()
-                .map(mapJsonToEvent())
-                .concatWith(Observable.never())
-                .doOnNext(subject::onNext) // doOnNext so subject never completes
-                .subscribe();
+        final Observable<IModuleEvent> event = request
+                .observe()
+                .map(mapJsonToEvent());
+        eventStream.publish(event);
     }
 
     private RibbonRequest<ByteBuf> buildRequest() {
