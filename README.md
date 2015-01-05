@@ -9,11 +9,11 @@ This application is currently under development and is not finished...
 
 For testing purposes, JVM args are used to configure the application:
 
--DweatherAlarm.locationWoeid=<yahoo location id>
--DweatherAlarm.weatherServiceQueryInterval=<seconds>
--DweatherAlarm.userName=<user name>
--DweatherAlarm.userEmail=<your.name@yourEmail.com>
--DweatherAlarm.temperaturePredicate=<LT,LE,GT,GE,EQ,NE>
--DweatherAlarm.temperatureValue=<integer value>
+-DweatherAlarm.locationWoeid=[yahoo location id]
+-DweatherAlarm.weatherServiceQueryInterval=[seconds]
+-DweatherAlarm.userName=[user name]
+-DweatherAlarm.userEmail=[your.name@yourEmail.com]
+-DweatherAlarm.temperaturePredicate=[LT,LE,GT,GE,EQ,NE]
+-DweatherAlarm.temperatureValue=[integer value]
 
 Yahoo location ids can be looked up here: http://woeid.rosselliot.co.nz/
