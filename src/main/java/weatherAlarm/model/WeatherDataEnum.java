@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package weatherAlarm.events;
+package weatherAlarm.model;
 
 /**
  * @author <a href="mailto:john.scattergood@gmail.com">John Scattergood</a> 1/4/2015
  */
-public class NotificationSentEvent implements IModuleEvent {
+public enum WeatherDataEnum {
+    TEMPERATURE;
 }

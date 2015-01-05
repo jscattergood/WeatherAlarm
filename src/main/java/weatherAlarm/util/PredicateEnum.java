@@ -14,10 +14,16 @@
  * limitations under the License.
  */
 
-package weatherAlarm.events;
+package weatherAlarm.util;
 
 /**
- * @author <a href="mailto:john.scattergood@gmail.com">John Scattergood</a> 1/4/2015
- */
-public class NotificationSentEvent implements IModuleEvent {
+* @author <a href="mailto:john.scattergood@gmail.com">John Scattergood</a> 1/4/2015
+*/
+public enum PredicateEnum {
+    EQ,
+    NE,
+    GT,
+    GE,
+    LT,
+    LE,
 }
