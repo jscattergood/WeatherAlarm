@@ -85,7 +85,7 @@ public class WeatherQueryModule extends EventModule {
     private RibbonRequest<ByteBuf> buildRequest() {
         HttpRequestTemplate<ByteBuf> weatherQueryTemplate = getRequestTemplate();
         return weatherQueryTemplate.requestBuilder()
-                .withRequestProperty("woeid", location)
+                .withRequestProperty("location", location)
                 .build();
     }
 
@@ -100,10 +100,10 @@ public class WeatherQueryModule extends EventModule {
             } catch (UnsupportedEncodingException e) {
                 logger.error(e.getMessage());
             }
-            cachedRequestTemplate = group.newTemplateBuilder("getWeatherByWoeid")
+            cachedRequestTemplate = group.newTemplateBuilder("getWeatherByLocation")
                     .withMethod("GET")
                     .withUriTemplate("/v1/public/yql" +
-                            "?q=" + encodedYql + "{woeid}" +
+                            "?q=" + encodedYql + "{location}" +
                             "&format=json" +
                             "&env=" + encodedEnv)
                     .build();
