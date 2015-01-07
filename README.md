@@ -10,7 +10,7 @@ This application is currently under development and is not finished...
 For testing purposes, JVM args are used to configure the application:
 
 ```
--DweatherAlarm.locationWoeid=[yahoo location id]
+-DweatherAlarm.location=[zip code]
 -DweatherAlarm.weatherServiceQueryInterval=[seconds] 
 -DweatherAlarm.userName=[user's name]
 -DweatherAlarm.userEmail=[user's email address, e.g. user.name@userEmail.com]
@@ -20,5 +20,3 @@ For testing purposes, JVM args are used to configure the application:
 -DweatherAlarm.emailAuthUser=[service's email account, e.g. service.email@serviceEmail.com]
 -DweatherAlarm.emailAuthPass=[service email account password]
 ```
-
-Yahoo location ids can be looked up here: http://woeid.rosselliot.co.nz/

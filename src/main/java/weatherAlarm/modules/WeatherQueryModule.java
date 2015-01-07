@@ -47,7 +47,7 @@ public class WeatherQueryModule extends EventModule {
     private static final long SECS_PER_MIN = 60;
     private static final long DEFAULT_QUERY_INTERVAL = 15 * SECS_PER_MIN;
 
-    private String locationWOEID;
+    private String location;
     private HttpResourceGroup cachedResourceGroup;
     private HttpRequestTemplate<ByteBuf> cachedRequestTemplate;
 
@@ -57,9 +57,9 @@ public class WeatherQueryModule extends EventModule {
 
     @Override
     protected void configure() {
-        locationWOEID = System.getProperty("weatherAlarm.locationWoeid");
-        if (locationWOEID == null) {
-            logger.error("No location WOEID defined");
+        location = System.getProperty("weatherAlarm.location");
+        if (location == null) {
+            logger.error("No location defined");
         }
         final String intervalProperty = System.getProperty("weatherAlarm.weatherServiceQueryInterval");
         long queryInterval;
@@ -85,7 +85,7 @@ public class WeatherQueryModule extends EventModule {
     private RibbonRequest<ByteBuf> buildRequest() {
         HttpRequestTemplate<ByteBuf> weatherQueryTemplate = getRequestTemplate();
         return weatherQueryTemplate.requestBuilder()
-                .withRequestProperty("woeid", locationWOEID)
+                .withRequestProperty("woeid", location)
                 .build();
     }
 
@@ -95,7 +95,7 @@ public class WeatherQueryModule extends EventModule {
             String encodedYql = StringUtils.EMPTY;
             String encodedEnv = StringUtils.EMPTY;
             try {
-                encodedYql = URLEncoder.encode("select item.condition from weather.forecast where woeid = ", "UTF-8");
+                encodedYql = URLEncoder.encode("select item.condition from weather.forecast where location = ", "UTF-8");
                 encodedEnv = URLEncoder.encode("store://datatables.org/alltableswithkeys", "UTF-8");
             } catch (UnsupportedEncodingException e) {
                 logger.error(e.getMessage());
