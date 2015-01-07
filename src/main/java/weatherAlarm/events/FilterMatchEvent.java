@@ -16,8 +16,34 @@
 
 package weatherAlarm.events;
 
+import weatherAlarm.model.WeatherAlarm;
+import weatherAlarm.model.WeatherConditions;
+
 /**
  * @author <a href="mailto:john.scattergood@gmail.com">John Scattergood</a> 1/4/2015
  */
 public class FilterMatchEvent implements IModuleEvent {
+    private WeatherAlarm alarm;
+    private WeatherConditions conditions;
+
+    public FilterMatchEvent(WeatherAlarm alarm, WeatherConditions conditions) {
+        this.alarm = alarm;
+        this.conditions = conditions;
+    }
+
+    public WeatherAlarm getAlarm() {
+        return alarm;
+    }
+
+    public WeatherConditions getConditions() {
+        return conditions;
+    }
+
+    @Override
+    public String toString() {
+        return "FilterMatchEvent[" +
+                "alarm=" + alarm +
+                ", conditions=" + conditions +
+                ']';
+    }
 }

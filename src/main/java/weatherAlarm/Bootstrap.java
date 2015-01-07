@@ -24,7 +24,7 @@ import weatherAlarm.endpoints.HealthCheck;
 import weatherAlarm.events.EventStream;
 import weatherAlarm.handlers.HttpRequestHandler;
 import weatherAlarm.modules.AlarmModule;
-import weatherAlarm.modules.NotificationModule;
+import weatherAlarm.modules.EmailNotificationModule;
 import weatherAlarm.modules.WeatherQueryModule;
 
 /**
@@ -38,7 +38,7 @@ public class Bootstrap {
         EventStream events = new EventStream();
         WeatherQueryModule weatherQueryModule = new WeatherQueryModule(events);
         AlarmModule alarmModule = new AlarmModule(events);
-        NotificationModule notificationModule = new NotificationModule(events);
+        EmailNotificationModule notificationModule = new EmailNotificationModule(events);
 
         events.observe().doOnNext(System.out::println).subscribe();
 

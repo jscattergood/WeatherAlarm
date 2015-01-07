@@ -17,8 +17,8 @@
 package weatherAlarm.util;
 
 /**
-* @author <a href="mailto:john.scattergood@gmail.com">John Scattergood</a> 1/4/2015
-*/
+ * @author <a href="mailto:john.scattergood@gmail.com">John Scattergood</a> 1/4/2015
+ */
 public enum PredicateEnum {
     EQ,
     NE,

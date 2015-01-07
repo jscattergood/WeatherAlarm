@@ -16,24 +16,26 @@
 
 package weatherAlarm.events;
 
-import rx.Observable;
-import rx.subjects.BehaviorSubject;
+import weatherAlarm.model.WeatherAlarm;
 
 /**
- * @author <a href="mailto:john.scattergood@gmail.com">John Scattergood</a> 1/4/2015
+ * @author <a href="mailto:john.scattergood@gmail.com">John Scattergood</a> 1/7/2015
  */
-public class EventStream {
-    private BehaviorSubject<IModuleEvent> stream = BehaviorSubject.create();
+public class WeatherAlarmUpdatedEvent implements IModuleEvent {
+    private WeatherAlarm alarm;
 
-    public void publish(Observable<IModuleEvent> event) {
-        event.doOnNext(stream::onNext).subscribe();
+    public WeatherAlarmUpdatedEvent(WeatherAlarm alarm) {
+        this.alarm = alarm;
     }
 
-    public Observable<IModuleEvent> observe() {
-        return stream;
+    public WeatherAlarm getAlarm() {
+        return alarm;
     }
 
-    public <T> Observable<T> observe(Class<T> eventClass) {
-        return stream.ofType(eventClass);
+    @Override
+    public String toString() {
+        return "WeatherAlarmUpdatedEvent[" +
+                "alarm=" + alarm +
+                ']';
     }
 }

@@ -21,15 +21,12 @@ import rx.functions.Func1;
 import weatherAlarm.events.EventStream;
 import weatherAlarm.events.FilterMatchEvent;
 import weatherAlarm.events.IModuleEvent;
-import weatherAlarm.events.NotificationSentEvent;
 
 /**
- * This class is responsible for performing external notifications
- *
- * @author <a href="mailto:john.scattergood@gmail.com">John Scattergood</a> 12/30/2014
+ * @author <a href="mailto:john.scattergood@gmail.com">John Scattergood</a> 1/7/2015
  */
-public class NotificationModule extends EventModule {
-    public NotificationModule(EventStream stream) {
+public abstract class AbstractNotificationModule extends EventModule {
+    public AbstractNotificationModule(EventStream stream) {
         super(stream);
     }
 
@@ -37,12 +34,9 @@ public class NotificationModule extends EventModule {
     protected void configure() {
         Observable<IModuleEvent> observableEvent = eventStream
                 .observe(FilterMatchEvent.class)
-                .flatMap(sendNotification())
-                .map(event -> new NotificationSentEvent());
+                .flatMap(sendNotification());
         eventStream.publish(observableEvent);
     }
 
-    private Func1<? super IModuleEvent, ? extends Observable<IModuleEvent>> sendNotification() {
-        return moduleEvent -> Observable.just(moduleEvent);
-    }
+    protected abstract Func1<? super FilterMatchEvent, ? extends Observable<IModuleEvent>> sendNotification();
 }

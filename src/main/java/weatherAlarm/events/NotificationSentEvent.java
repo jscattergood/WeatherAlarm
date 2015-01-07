@@ -16,8 +16,27 @@
 
 package weatherAlarm.events;
 
+import weatherAlarm.model.WeatherAlarm;
+
+import java.time.Instant;
+
 /**
  * @author <a href="mailto:john.scattergood@gmail.com">John Scattergood</a> 1/4/2015
  */
 public class NotificationSentEvent implements IModuleEvent {
+    private WeatherAlarm alarm;
+    private Instant eventTime;
+
+    public NotificationSentEvent(WeatherAlarm alarm, Instant eventTime) {
+        this.alarm = alarm;
+        this.eventTime = eventTime;
+    }
+
+    public WeatherAlarm getAlarm() {
+        return alarm;
+    }
+
+    public Instant getEventTime() {
+        return eventTime;
+    }
 }

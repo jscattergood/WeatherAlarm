@@ -20,4 +20,21 @@ package weatherAlarm.events;
  * @author <a href="mailto:john.scattergood@gmail.com">John Scattergood</a> 1/4/2015
  */
 public class NotificationNotSentEvent implements IModuleEvent {
+    private String reason;
+
+    public NotificationNotSentEvent(String reason) {
+
+        this.reason = reason;
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    @Override
+    public String toString() {
+        return "NotificationNotSentEvent[" +
+                "reason='" + reason + '\'' +
+                ']';
+    }
 }

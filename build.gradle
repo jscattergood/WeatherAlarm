@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+
+
 apply plugin: 'java'
 
 sourceCompatibility = 1.8
@@ -26,6 +28,8 @@ repositories {
 dependencies {
     compile group: 'com.netflix.ribbon', name: 'ribbon', version: '2.0-RC13'
     compile group: 'com.netflix.karyon2', name: 'karyon-servo', version: '2.2.00-ALPHA3'
+
+    compile group: 'com.sun.mail', name: 'javax.mail', version: '1.5.2'
 
     compile 'org.slf4j:slf4j-api:1.7.0'
     runtime 'org.slf4j:slf4j-simple:1.7.0'

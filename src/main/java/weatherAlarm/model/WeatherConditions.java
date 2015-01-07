@@ -25,12 +25,12 @@ import java.util.Map;
 public class WeatherConditions {
     private Map<WeatherDataEnum, Object> weatherData = new EnumMap<>(WeatherDataEnum.class);
 
-    public void setTemperature(Integer temp) {
-        weatherData.put(WeatherDataEnum.TEMPERATURE, temp);
-    }
-
     public Integer getTemperature() {
         return (Integer) weatherData.get(WeatherDataEnum.TEMPERATURE);
+    }
+
+    public void setTemperature(Integer temp) {
+        weatherData.put(WeatherDataEnum.TEMPERATURE, temp);
     }
 
     @Override

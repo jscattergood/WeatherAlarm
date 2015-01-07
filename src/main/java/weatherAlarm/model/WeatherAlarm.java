@@ -18,19 +18,19 @@ package weatherAlarm.model;
 
 import weatherAlarm.util.PredicateEnum;
 
-import java.util.Date;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.EnumMap;
 import java.util.Map;
 
 /**
- *
  * @author <a href="mailto:john.scattergood@gmail.com">John Scattergood</a> 1/4/2015
  */
 public class WeatherAlarm {
     private String username;
     private String emailAddress;
     private Map<WeatherDataEnum, ValuePredicate> criteria = new EnumMap<>(WeatherDataEnum.class);
-    private Date lastNotification;
+    private Instant lastNotification;
 
     public WeatherAlarm(String username, String emailAddress) {
         this.username = username;
@@ -68,18 +68,36 @@ public class WeatherAlarm {
                 valuePredicate.satisfies(value);
     }
 
-    public Date getLastNotification() {
+    public Instant getLastNotification() {
         return lastNotification;
     }
 
-    public void setLastNotification(Date lastNotification) {
+    public void setLastNotification(Instant lastNotification) {
         this.lastNotification = lastNotification;
+    }
+
+    public boolean shouldSendNotification() {
+        Instant lastNotification = getLastNotification();
+        if (lastNotification == null) {
+            return true;
+        }
+        Duration duration = Duration.between(Instant.now(), lastNotification);
+        return duration.compareTo(Duration.ofHours(1L)) == 1 || duration.compareTo(Duration.ofHours(1L)) == 0;
+    }
+
+    @Override
+    public String toString() {
+        return "WeatherAlarm[" +
+                "username='" + username + '\'' +
+                ", emailAddress='" + emailAddress + '\'' +
+                ", criteria=" + criteria +
+                ", lastNotification=" + lastNotification +
+                ']';
     }
 
     public static class ValuePredicate<T> {
         private PredicateEnum predicate;
         private Comparable<T> value;
-        private Class<T> valueClass;
 
         public ValuePredicate(PredicateEnum predicate, Comparable<T> value) {
             this.predicate = predicate;

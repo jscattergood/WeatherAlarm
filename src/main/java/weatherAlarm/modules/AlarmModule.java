@@ -28,6 +28,7 @@ import weatherAlarm.util.PredicateEnum;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -36,8 +37,8 @@ import java.util.stream.Stream;
  * @author <a href="mailto:john.scattergood@gmail.com">John Scattergood</a> 12/30/2014
  */
 public class AlarmModule extends EventModule {
-    private List<WeatherAlarm> alarms = new ArrayList<>();
     private static final Logger logger = LoggerFactory.getLogger(AlarmModule.class);
+    private List<WeatherAlarm> alarms = new ArrayList<>();
 
     public AlarmModule(EventStream stream) {
         super(stream);
@@ -47,10 +48,15 @@ public class AlarmModule extends EventModule {
     protected void configure() {
         addAlarms();
 
-        final Observable<IModuleEvent> observableEvent = eventStream
+        final Observable<IModuleEvent> observableFilterEvent = eventStream
                 .observe(WeatherConditionEvent.class)
                 .flatMap(evaluateEvent());
-        eventStream.publish(observableEvent);
+        eventStream.publish(observableFilterEvent);
+
+        final Observable<IModuleEvent> observableNotificationEvent = eventStream
+                .observe(NotificationSentEvent.class)
+                .flatMap(handleNotification());
+        eventStream.publish(observableNotificationEvent);
     }
 
     private void addAlarms() {
@@ -67,15 +73,14 @@ public class AlarmModule extends EventModule {
         final String temperaturePredicate = System.getProperty("weatherAlarm.temperaturePredicate");
         final PredicateEnum predicateEnum = PredicateEnum.valueOf(temperaturePredicate);
         if (predicateEnum == null) {
-            logger.error("Invalid predicate enum " + temperaturePredicate +". Not adding alarm...");
+            logger.error("Invalid predicate enum " + temperaturePredicate + ". Not adding alarm...");
             return;
         }
         final String temperatureValue = System.getProperty("weatherAlarm.temperatureValue");
         final Integer value;
         try {
             value = Integer.parseInt(temperatureValue);
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             logger.error("Invalid temperature value " + temperatureValue + ". Not adding alarm...");
             return;
         }
@@ -86,24 +91,29 @@ public class AlarmModule extends EventModule {
         alarms.add(alarm);
     }
 
-    private Func1<? super IModuleEvent, ? extends Observable<IModuleEvent>> evaluateEvent() {
-        return new Func1<IModuleEvent, Observable<IModuleEvent>>() {
-            @Override
-            public Observable<IModuleEvent> call(IModuleEvent event) {
-                if (event instanceof WeatherConditionEvent) {
-                    WeatherConditionEvent weatherConditionEvent = (WeatherConditionEvent)event;
-                    Stream<WeatherAlarm> matchingAlarms = alarms.stream()
-                            .filter(alarm -> {
-                                WeatherConditions conditions = weatherConditionEvent.getConditions();
-                                return alarm.matchesCriteria(WeatherDataEnum.TEMPERATURE, conditions.getTemperature());
-                            });
-                    IModuleEvent[] eventArray = matchingAlarms
-                            .flatMap(alarm -> Stream.of(new FilterMatchEvent()))
-                            .toArray(IModuleEvent[]::new);
-                    return Observable.from(eventArray);
-                }
+    private Func1<? super WeatherConditionEvent, ? extends Observable<IModuleEvent>> evaluateEvent() {
+        return event -> {
+            WeatherConditions conditions = event.getConditions();
+            List<WeatherAlarm> matchingAlarms = alarms.stream()
+                    .filter(alarm -> alarm.matchesCriteria(WeatherDataEnum.TEMPERATURE, conditions.getTemperature())
+                            && alarm.shouldSendNotification())
+                    .collect(Collectors.toList());
+            if (matchingAlarms.size() > 0) {
+                List<IModuleEvent> events = matchingAlarms.stream()
+                        .flatMap(alarm -> Stream.of(new FilterMatchEvent(alarm, conditions)))
+                        .collect(Collectors.toList());
+                return Observable.from(events);
+            } else {
                 return Observable.just(new FilterNoMatchEvent());
             }
+        };
+    }
+
+    private Func1<? super NotificationSentEvent, ? extends Observable<IModuleEvent>> handleNotification() {
+        return event -> {
+            WeatherAlarm alarm = event.getAlarm();
+            alarm.setLastNotification(event.getEventTime());
+            return Observable.just(new WeatherAlarmUpdatedEvent(alarm));
         };
     }
 }
