@@ -39,4 +39,12 @@ public class NotificationSentEvent implements IModuleEvent {
     public Instant getEventTime() {
         return eventTime;
     }
+
+    @Override
+    public String toString() {
+        return "NotificationSentEvent[" +
+                "alarm=" + alarm +
+                ", eventTime=" + eventTime +
+                ']';
+    }
 }
