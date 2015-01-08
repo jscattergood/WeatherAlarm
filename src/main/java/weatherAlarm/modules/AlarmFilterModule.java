@@ -28,19 +28,19 @@ import weatherAlarm.util.PredicateEnum;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * This class is responsible for filtering current weather conditions to determining if an alarm should be raised
  *
  * @author <a href="mailto:john.scattergood@gmail.com">John Scattergood</a> 12/30/2014
  */
-public class AlarmModule extends EventModule {
-    private static final Logger logger = LoggerFactory.getLogger(AlarmModule.class);
+public class AlarmFilterModule extends EventModule {
+    private static final Logger logger = LoggerFactory.getLogger(AlarmFilterModule.class);
     private List<WeatherAlarm> alarms = new ArrayList<>();
 
-    public AlarmModule(EventStream stream) {
+    public AlarmFilterModule(EventStream stream) {
         super(stream);
     }
 
@@ -57,6 +57,11 @@ public class AlarmModule extends EventModule {
                 .observe(NotificationSentEvent.class)
                 .flatMap(handleNotification());
         eventStream.publish(observableNotificationEvent);
+
+        final Observable<IModuleEvent> observableFilterNotMatchEvent = eventStream
+                .observe(FilterNoMatchEvent.class)
+                .flatMap(handleFilterNoMatch());
+        eventStream.publish(observableFilterNotMatchEvent);
     }
 
     private void addAlarms() {
@@ -94,17 +99,23 @@ public class AlarmModule extends EventModule {
     private Func1<? super WeatherConditionEvent, ? extends Observable<IModuleEvent>> evaluateEvent() {
         return event -> {
             WeatherConditions conditions = event.getConditions();
-            List<WeatherAlarm> matchingAlarms = alarms.stream()
-                    .filter(alarm -> alarm.matchesCriteria(WeatherDataEnum.TEMPERATURE, conditions.getTemperature())
-                            && alarm.shouldSendNotification())
+            List<IModuleEvent> eventList = alarms.stream()
+                    .map(convertToEvent(conditions))
                     .collect(Collectors.toList());
-            if (matchingAlarms.size() > 0) {
-                List<IModuleEvent> events = matchingAlarms.stream()
-                        .flatMap(alarm -> Stream.of(new FilterMatchEvent(alarm, conditions)))
-                        .collect(Collectors.toList());
-                return Observable.from(events);
+            return Observable.from(eventList);
+        };
+    }
+
+    private Function<WeatherAlarm, IModuleEvent> convertToEvent(WeatherConditions conditions) {
+        return alarm -> {
+            boolean match = alarm.matchesCriteria(WeatherDataEnum.TEMPERATURE, conditions.getTemperature());
+            boolean shouldSend = alarm.shouldSendNotification();
+            if (match && shouldSend) {
+                return new FilterMatchEvent(alarm, conditions);
+            } else if (match) {
+                return new FilterNoMatchEvent(FilterNoMatchEvent.Reason.NOT_READY, alarm);
             } else {
-                return Observable.just(new FilterNoMatchEvent());
+                return new FilterNoMatchEvent(FilterNoMatchEvent.Reason.CRITERIA, alarm);
             }
         };
     }
@@ -114,6 +125,19 @@ public class AlarmModule extends EventModule {
             WeatherAlarm alarm = event.getAlarm();
             alarm.setLastNotification(event.getEventTime());
             return Observable.just(new WeatherAlarmUpdatedEvent(alarm));
+        };
+    }
+
+    private Func1<? super FilterNoMatchEvent, ? extends Observable<IModuleEvent>> handleFilterNoMatch() {
+        return event -> {
+            WeatherAlarm alarm = event.getAlarm();
+            // Reset the alarm so that it can be re-triggered if criteria met later
+            if (alarm.isTriggered() && FilterNoMatchEvent.Reason.CRITERIA.equals(event.getReason())) {
+                alarm.setTriggered(false);
+                return Observable.just(new WeatherAlarmUpdatedEvent(alarm));
+            } else {
+                return Observable.empty();
+            }
         };
     }
 }

@@ -16,8 +16,38 @@
 
 package weatherAlarm.events;
 
+import weatherAlarm.model.WeatherAlarm;
+
 /**
  * @author <a href="mailto:john.scattergood@gmail.com">John Scattergood</a> 1/4/2015
  */
 public class FilterNoMatchEvent implements IModuleEvent {
+    private Reason reason;
+    private WeatherAlarm alarm;
+
+    public FilterNoMatchEvent(Reason reason, WeatherAlarm alarm) {
+        this.reason = reason;
+        this.alarm = alarm;
+    }
+
+    public Reason getReason() {
+        return reason;
+    }
+
+    public WeatherAlarm getAlarm() {
+        return alarm;
+    }
+
+    @Override
+    public String toString() {
+        return "FilterNoMatchEvent[" +
+                "reason=" + reason +
+                ", alarm=" + alarm +
+                ']';
+    }
+
+    public enum Reason {
+        CRITERIA,
+        NOT_READY
+    }
 }

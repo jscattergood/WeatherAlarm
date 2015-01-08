@@ -18,7 +18,6 @@ package weatherAlarm.model;
 
 import weatherAlarm.util.PredicateEnum;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.util.EnumMap;
 import java.util.Map;
@@ -31,6 +30,7 @@ public class WeatherAlarm {
     private String emailAddress;
     private Map<WeatherDataEnum, ValuePredicate> criteria = new EnumMap<>(WeatherDataEnum.class);
     private Instant lastNotification;
+    private boolean triggered;
 
     public WeatherAlarm(String username, String emailAddress) {
         this.username = username;
@@ -61,6 +61,23 @@ public class WeatherAlarm {
         criteria.put(weatherDataEnum, valuePredicate);
     }
 
+    public Instant getLastNotification() {
+        return lastNotification;
+    }
+
+    public void setLastNotification(Instant lastNotification) {
+        this.lastNotification = lastNotification;
+        this.triggered = true;
+    }
+
+    public boolean isTriggered() {
+        return triggered;
+    }
+
+    public void setTriggered(boolean triggered) {
+        this.triggered = triggered;
+    }
+
     public boolean matchesCriteria(WeatherDataEnum weatherDataEnum, Comparable value) {
         ValuePredicate valuePredicate = getCriteria(weatherDataEnum);
         //noinspection unchecked
@@ -68,21 +85,8 @@ public class WeatherAlarm {
                 valuePredicate.satisfies(value);
     }
 
-    public Instant getLastNotification() {
-        return lastNotification;
-    }
-
-    public void setLastNotification(Instant lastNotification) {
-        this.lastNotification = lastNotification;
-    }
-
     public boolean shouldSendNotification() {
-        Instant lastNotification = getLastNotification();
-        if (lastNotification == null) {
-            return true;
-        }
-        Duration duration = Duration.between(Instant.now(), lastNotification);
-        return duration.compareTo(Duration.ofHours(1L)) == 1 || duration.compareTo(Duration.ofHours(1L)) == 0;
+        return !triggered;
     }
 
     @Override
@@ -92,6 +96,7 @@ public class WeatherAlarm {
                 ", emailAddress='" + emailAddress + '\'' +
                 ", criteria=" + criteria +
                 ", lastNotification=" + lastNotification +
+                ", triggered=" + triggered +
                 ']';
     }
 

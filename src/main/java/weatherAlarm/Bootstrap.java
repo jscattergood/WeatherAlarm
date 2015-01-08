@@ -23,7 +23,7 @@ import netflix.karyon.transport.http.health.HealthCheckEndpoint;
 import weatherAlarm.endpoints.HealthCheck;
 import weatherAlarm.events.EventStream;
 import weatherAlarm.handlers.HttpRequestHandler;
-import weatherAlarm.modules.AlarmModule;
+import weatherAlarm.modules.AlarmFilterModule;
 import weatherAlarm.modules.EmailNotificationModule;
 import weatherAlarm.modules.WeatherQueryModule;
 
@@ -37,7 +37,7 @@ public class Bootstrap {
 
         EventStream events = new EventStream();
         WeatherQueryModule weatherQueryModule = new WeatherQueryModule(events);
-        AlarmModule alarmModule = new AlarmModule(events);
+        AlarmFilterModule alarmFilterModule = new AlarmFilterModule(events);
         EmailNotificationModule notificationModule = new EmailNotificationModule(events);
 
         events.observe().doOnNext(System.out::println).subscribe();
@@ -47,7 +47,7 @@ public class Bootstrap {
                         new HealthCheckEndpoint(healthCheckHandler)),
                 new KaryonBootstrapSuite(healthCheckHandler),
                 weatherQueryModule.asSuite(),
-                alarmModule.asSuite(),
+                alarmFilterModule.asSuite(),
                 notificationModule.asSuite(),
                 KaryonServoModule.asSuite())
                 .startAndWaitTillShutdown();
