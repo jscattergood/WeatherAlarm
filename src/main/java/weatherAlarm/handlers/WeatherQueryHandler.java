@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package weatherAlarm.modules;
+package weatherAlarm.handlers;
 
 import com.netflix.ribbon.ClientOptions;
 import com.netflix.ribbon.Ribbon;
@@ -42,8 +42,8 @@ import java.util.concurrent.TimeUnit;
  *
  * @author <a href="mailto:john.scattergood@gmail.com">John Scattergood</a> 12/28/2014
  */
-public class WeatherQueryModule extends EventModule {
-    private static final Logger logger = LoggerFactory.getLogger(WeatherQueryModule.class);
+public class WeatherQueryHandler extends EventHandler {
+    private static final Logger logger = LoggerFactory.getLogger(WeatherQueryHandler.class);
     private static final long SECS_PER_MIN = 60;
     private static final long DEFAULT_QUERY_INTERVAL = 15 * SECS_PER_MIN;
 
@@ -51,12 +51,8 @@ public class WeatherQueryModule extends EventModule {
     private HttpResourceGroup cachedResourceGroup;
     private HttpRequestTemplate<ByteBuf> cachedRequestTemplate;
 
-    public WeatherQueryModule(EventStream stream) {
+    public WeatherQueryHandler(EventStream stream) {
         super(stream);
-    }
-
-    @Override
-    protected void configure() {
         location = System.getProperty("weatherAlarm.location");
         if (location == null) {
             logger.error("No location defined");

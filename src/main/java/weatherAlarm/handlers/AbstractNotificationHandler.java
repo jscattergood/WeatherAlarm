@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package weatherAlarm.modules;
+package weatherAlarm.handlers;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -25,13 +25,10 @@ import weatherAlarm.events.IModuleEvent;
 /**
  * @author <a href="mailto:john.scattergood@gmail.com">John Scattergood</a> 1/7/2015
  */
-public abstract class AbstractNotificationModule extends EventModule {
-    public AbstractNotificationModule(EventStream stream) {
+public abstract class AbstractNotificationHandler extends EventHandler {
+    public AbstractNotificationHandler(EventStream stream) {
         super(stream);
-    }
 
-    @Override
-    protected void configure() {
         Observable<IModuleEvent> observableEvent = eventStream
                 .observe(FilterMatchEvent.class)
                 .flatMap(sendNotification());

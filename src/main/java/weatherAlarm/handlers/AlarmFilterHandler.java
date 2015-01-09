@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package weatherAlarm.modules;
+package weatherAlarm.handlers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,16 +36,13 @@ import java.util.stream.Collectors;
  *
  * @author <a href="mailto:john.scattergood@gmail.com">John Scattergood</a> 12/30/2014
  */
-public class AlarmFilterModule extends EventModule {
-    private static final Logger logger = LoggerFactory.getLogger(AlarmFilterModule.class);
+public class AlarmFilterHandler extends EventHandler {
+    private static final Logger logger = LoggerFactory.getLogger(AlarmFilterHandler.class);
     private List<WeatherAlarm> alarms = new ArrayList<>();
 
-    public AlarmFilterModule(EventStream stream) {
+    public AlarmFilterHandler(EventStream stream) {
         super(stream);
-    }
 
-    @Override
-    protected void configure() {
         addAlarms();
 
         final Observable<IModuleEvent> observableFilterEvent = eventStream

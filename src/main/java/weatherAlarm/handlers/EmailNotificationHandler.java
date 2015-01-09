@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package weatherAlarm.modules;
+package weatherAlarm.handlers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,8 +39,8 @@ import java.util.Properties;
  *
  * @author <a href="mailto:john.scattergood@gmail.com">John Scattergood</a> 12/30/2014
  */
-public class EmailNotificationModule extends AbstractNotificationModule {
-    private static final Logger logger = LoggerFactory.getLogger(EmailNotificationModule.class);
+public class EmailNotificationHandler extends AbstractNotificationHandler {
+    private static final Logger logger = LoggerFactory.getLogger(EmailNotificationHandler.class);
     private static final String MAIL_SMTP_HOST = "mail.smtp.host";
     private static final String MAIL_SMTP_USER = "mail.smtp.user";
     private static final String MAIL_SMTP_AUTH_PASS = "mail.smtp.authPass";
@@ -53,13 +53,8 @@ public class EmailNotificationModule extends AbstractNotificationModule {
     private String emailAuthUser;
     private String emailAuthPass;
 
-    public EmailNotificationModule(EventStream stream) {
+    public EmailNotificationHandler(EventStream stream) {
         super(stream);
-    }
-
-    @Override
-    protected void configure() {
-        super.configure();
 
         final String emailHostName = System.getProperty("weatherAlarm.emailHostName");
         if (emailHostName == null) {
