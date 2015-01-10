@@ -18,6 +18,7 @@ package weatherAlarm;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
+import com.google.inject.Singleton;
 import com.netflix.governator.guice.LifecycleInjectorBuilderSuite;
 import weatherAlarm.events.IEventStream;
 import weatherAlarm.events.SubjectEventStream;
@@ -41,15 +42,16 @@ public class WeatherAlarmModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        bind(IConfigService.class).to(PropertyConfigService.class).asEagerSingleton();
-        bind(IWeatherAlarmService.class).to(SimpleAlarmService.class).asEagerSingleton();
-        bind(IEventStream.class).to(SubjectEventStream.class).asEagerSingleton();
-        bind(WeatherQueryHandler.class).asEagerSingleton();
-        bind(AlarmFilterHandler.class).asEagerSingleton();
-        bind(EmailNotificationHandler.class).asEagerSingleton();
+        bind(IConfigService.class).to(PropertyConfigService.class);
+        bind(IWeatherAlarmService.class).to(SimpleAlarmService.class);
+        bind(IEventStream.class).to(SubjectEventStream.class);
+        bind(WeatherQueryHandler.class);
+        bind(AlarmFilterHandler.class);
+        bind(EmailNotificationHandler.class);
     }
 
     @Provides
+    @Singleton
     SubjectEventStream providesEventStream() {
         SubjectEventStream events = new SubjectEventStream();
         events.observe().doOnNext(System.out::println).subscribe();

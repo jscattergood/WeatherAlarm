@@ -17,6 +17,7 @@
 package weatherAlarm.handlers;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.netflix.ribbon.ClientOptions;
 import com.netflix.ribbon.Ribbon;
 import com.netflix.ribbon.RibbonRequest;
@@ -44,6 +45,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author <a href="https://github.com/jscattergood">John Scattergood</a> 12/28/2014
  */
+@Singleton
 public class WeatherQueryHandler extends EventHandler {
     private static final Logger logger = LoggerFactory.getLogger(WeatherQueryHandler.class);
     private static final long SECS_PER_MIN = 60;

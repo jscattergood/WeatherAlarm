@@ -16,6 +16,7 @@
 
 package weatherAlarm.services;
 
+import com.google.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,6 +30,7 @@ import java.util.Properties;
  *
  * @author <a href="https://github.com/jscattergood">John Scattergood</a> 1/8/2015
  */
+@Singleton
 public class PropertyConfigService implements IConfigService {
     public static final String CONFIG_PROPERTIES = "config.properties";
     private final static Logger logger = LoggerFactory.getLogger(PropertyConfigService.class);

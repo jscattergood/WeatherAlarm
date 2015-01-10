@@ -16,20 +16,22 @@
 
 package weatherAlarm.services;
 
+import com.google.inject.Singleton;
 import weatherAlarm.model.WeatherAlarm;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * This class is a simple map backed implementation of {@link weatherAlarm.services.IWeatherAlarmService}
  *
  * @author <a href="https://github.com/jscattergood">John Scattergood</a> 1/10/2015
  */
+@Singleton
 public class SimpleAlarmService implements IWeatherAlarmService {
-    private final Map<String, WeatherAlarm> weatherAlarmMap = new HashMap<>();
+    private final Map<String, WeatherAlarm> weatherAlarmMap = new ConcurrentHashMap<>();
 
     @Override
     public List<WeatherAlarm> getAlarms() {

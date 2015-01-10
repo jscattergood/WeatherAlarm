@@ -17,6 +17,7 @@
 package weatherAlarm.handlers;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rx.Observable;
@@ -38,6 +39,7 @@ import java.util.stream.Collectors;
  *
  * @author <a href="https://github.com/jscattergood">John Scattergood</a> 12/30/2014
  */
+@Singleton
 public class AlarmFilterHandler extends EventHandler {
     private static final Logger logger = LoggerFactory.getLogger(AlarmFilterHandler.class);
     private IWeatherAlarmService alarmService;
