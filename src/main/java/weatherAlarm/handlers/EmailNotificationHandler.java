@@ -16,6 +16,7 @@
 
 package weatherAlarm.handlers;
 
+import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rx.Observable;
@@ -23,6 +24,7 @@ import rx.functions.Func1;
 import weatherAlarm.events.*;
 import weatherAlarm.model.WeatherAlarm;
 import weatherAlarm.model.WeatherDataEnum;
+import weatherAlarm.services.IConfigService;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -53,20 +55,21 @@ public class EmailNotificationHandler extends AbstractNotificationHandler {
     private String emailAuthUser;
     private String emailAuthPass;
 
-    public EmailNotificationHandler(EventStream stream) {
+    @Inject
+    public EmailNotificationHandler(IEventStream stream, IConfigService configService) {
         super(stream);
 
-        final String emailHostName = System.getProperty("weatherAlarm.emailHostName");
+        final String emailHostName = configService.getConfigValue("weatherAlarm.emailHostName");
         if (emailHostName == null) {
             logger.error("No emailHostName defined. Cannot send notifications...");
             return;
         }
-        final String emailAuthUser = System.getProperty("weatherAlarm.emailAuthUser");
+        final String emailAuthUser = configService.getConfigValue("weatherAlarm.emailAuthUser");
         if (emailAuthUser == null) {
             logger.error("No emailAuthUser email defined. Cannot send notifications...");
             return;
         }
-        final String emailAuthPass = System.getProperty("weatherAlarm.emailAuthPass");
+        final String emailAuthPass = configService.getConfigValue("weatherAlarm.emailAuthPass");
         if (emailAuthPass == null) {
             logger.error("No emailAuthPass defined. Cannot send notifications...");
             return;

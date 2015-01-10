@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package weatherAlarm.repositories;
+package weatherAlarm.services;
 
 /**
  * @author <a href="mailto:john.scattergood@gmail.com">John Scattergood</a> 1/9/2015
  */
-public interface ConfigRepository {
+public interface IConfigService {
     String CONFIG_USER_NAME = "weatherAlarm.userName";
     String CONFIG_USER_EMAIL = "weatherAlarm.userEmail";
     String CONFIG_TEMPERATURE_PREDICATE = "weatherAlarm.temperaturePredicate";

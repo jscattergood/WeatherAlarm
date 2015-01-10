@@ -16,6 +16,7 @@
 
 package weatherAlarm.handlers;
 
+import com.google.inject.Inject;
 import com.netflix.ribbon.ClientOptions;
 import com.netflix.ribbon.Ribbon;
 import com.netflix.ribbon.RibbonRequest;
@@ -28,9 +29,10 @@ import org.slf4j.LoggerFactory;
 import rx.Observable;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-import weatherAlarm.events.EventStream;
+import weatherAlarm.events.IEventStream;
 import weatherAlarm.events.IModuleEvent;
 import weatherAlarm.events.WeatherConditionEvent;
+import weatherAlarm.services.IConfigService;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -51,13 +53,15 @@ public class WeatherQueryHandler extends EventHandler {
     private HttpResourceGroup cachedResourceGroup;
     private HttpRequestTemplate<ByteBuf> cachedRequestTemplate;
 
-    public WeatherQueryHandler(EventStream stream) {
+    @Inject
+    public WeatherQueryHandler(IEventStream stream, IConfigService configService) {
         super(stream);
-        location = System.getProperty("weatherAlarm.location");
+
+        location = configService.getConfigValue("weatherAlarm.location");
         if (location == null) {
             logger.error("No location defined");
         }
-        final String intervalProperty = System.getProperty("weatherAlarm.weatherServiceQueryInterval");
+        final String intervalProperty = configService.getConfigValue("weatherAlarm.weatherServiceQueryInterval");
         long queryInterval;
         if (intervalProperty != null) {
             queryInterval = Long.valueOf(intervalProperty);

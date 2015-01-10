@@ -14,33 +14,33 @@
  * limitations under the License.
  */
 
-package weatherAlarm.repositories;
+package weatherAlarm.services;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 /**
  * @author <a href="mailto:john.scattergood@gmail.com">John Scattergood</a> 1/8/2015
  */
-public class PropertyConfigRepository implements ConfigRepository {
-    private final static Logger logger = LoggerFactory.getLogger(PropertyConfigRepository.class);
+public class PropertyConfigService implements IConfigService {
+    public static final String CONFIG_PROPERTIES = "config.properties";
+    private final static Logger logger = LoggerFactory.getLogger(PropertyConfigService.class);
     private final Properties properties = new Properties();
 
-    public PropertyConfigRepository() {
-        File file = new File("config.properties");
-        if (file.exists()) {
-            try (FileInputStream in = new FileInputStream(file)) {
-                // load a properties file
-                properties.load(in);
-            } catch (IOException e) {
-                logger.error("Could not load properties", e);
-            }
+    public PropertyConfigService() {
+        // load a properties file
+        ClassLoader classLoader = this.getClass().getClassLoader();
+        try (InputStream inputStream = classLoader.getResourceAsStream(CONFIG_PROPERTIES)) {
+            properties.load(inputStream);
+
+        } catch (IOException e) {
+            logger.error("Could not load properties", e);
         }
+
         //Override properties with JVM args
         properties.putAll(System.getProperties());
     }

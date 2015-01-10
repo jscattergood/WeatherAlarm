@@ -18,15 +18,15 @@ package weatherAlarm.handlers;
 
 import rx.Observable;
 import rx.functions.Func1;
-import weatherAlarm.events.EventStream;
 import weatherAlarm.events.FilterMatchEvent;
+import weatherAlarm.events.IEventStream;
 import weatherAlarm.events.IModuleEvent;
 
 /**
  * @author <a href="mailto:john.scattergood@gmail.com">John Scattergood</a> 1/7/2015
  */
 public abstract class AbstractNotificationHandler extends EventHandler {
-    public AbstractNotificationHandler(EventStream stream) {
+    public AbstractNotificationHandler(IEventStream stream) {
         super(stream);
 
         Observable<IModuleEvent> observableEvent = eventStream

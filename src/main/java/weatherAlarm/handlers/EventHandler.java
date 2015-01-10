@@ -16,16 +16,16 @@
 
 package weatherAlarm.handlers;
 
-import weatherAlarm.events.EventStream;
+import weatherAlarm.events.IEventStream;
 
 /**
  * @author <a href="mailto:john.scattergood@gmail.com">John Scattergood</a> 1/3/2015
  */
 public abstract class EventHandler {
 
-    protected EventStream eventStream;
+    protected final IEventStream eventStream;
 
-    public EventHandler(EventStream stream) {
+    public EventHandler(IEventStream stream) {
         eventStream = stream;
     }
 }

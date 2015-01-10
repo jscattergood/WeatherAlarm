@@ -16,6 +16,7 @@
 
 package weatherAlarm.handlers;
 
+import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rx.Observable;
@@ -24,6 +25,7 @@ import weatherAlarm.events.*;
 import weatherAlarm.model.WeatherAlarm;
 import weatherAlarm.model.WeatherConditions;
 import weatherAlarm.model.WeatherDataEnum;
+import weatherAlarm.services.IConfigService;
 import weatherAlarm.util.PredicateEnum;
 
 import java.util.ArrayList;
@@ -40,10 +42,11 @@ public class AlarmFilterHandler extends EventHandler {
     private static final Logger logger = LoggerFactory.getLogger(AlarmFilterHandler.class);
     private List<WeatherAlarm> alarms = new ArrayList<>();
 
-    public AlarmFilterHandler(EventStream stream) {
+    @Inject
+    public AlarmFilterHandler(IEventStream stream, IConfigService configService) {
         super(stream);
 
-        addAlarms();
+        addAlarms(configService);
 
         final Observable<IModuleEvent> observableFilterEvent = eventStream
                 .observe(WeatherConditionEvent.class)
@@ -61,24 +64,24 @@ public class AlarmFilterHandler extends EventHandler {
         eventStream.publish(observableFilterNotMatchEvent);
     }
 
-    private void addAlarms() {
-        final String userName = System.getProperty("weatherAlarm.userName");
+    private void addAlarms(IConfigService configService) {
+        final String userName = configService.getConfigValue("weatherAlarm.userName");
         if (userName == null) {
             logger.error("No user defined. Not adding alarm...");
             return;
         }
-        final String userEmail = System.getProperty("weatherAlarm.userEmail");
+        final String userEmail = configService.getConfigValue("weatherAlarm.userEmail");
         if (userEmail == null) {
             logger.error("No user email defined. Not adding alarm...");
             return;
         }
-        final String temperaturePredicate = System.getProperty("weatherAlarm.temperaturePredicate");
+        final String temperaturePredicate = configService.getConfigValue("weatherAlarm.temperaturePredicate");
         final PredicateEnum predicateEnum = PredicateEnum.valueOf(temperaturePredicate);
         if (predicateEnum == null) {
             logger.error("Invalid predicate enum " + temperaturePredicate + ". Not adding alarm...");
             return;
         }
-        final String temperatureValue = System.getProperty("weatherAlarm.temperatureValue");
+        final String temperatureValue = configService.getConfigValue("weatherAlarm.temperatureValue");
         final Integer value;
         try {
             value = Integer.parseInt(temperatureValue);
