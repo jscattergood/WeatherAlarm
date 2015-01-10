@@ -25,7 +25,9 @@ import weatherAlarm.handlers.AlarmFilterHandler;
 import weatherAlarm.handlers.EmailNotificationHandler;
 import weatherAlarm.handlers.WeatherQueryHandler;
 import weatherAlarm.services.IConfigService;
+import weatherAlarm.services.IWeatherAlarmService;
 import weatherAlarm.services.PropertyConfigService;
+import weatherAlarm.services.SimpleAlarmService;
 
 /**
  * This class is the Guice module that configures the application.
@@ -40,6 +42,7 @@ public class WeatherAlarmModule extends AbstractModule {
     @Override
     protected void configure() {
         bind(IConfigService.class).to(PropertyConfigService.class).asEagerSingleton();
+        bind(IWeatherAlarmService.class).to(SimpleAlarmService.class).asEagerSingleton();
         bind(IEventStream.class).to(SubjectEventStream.class).asEagerSingleton();
         bind(WeatherQueryHandler.class).asEagerSingleton();
         bind(AlarmFilterHandler.class).asEagerSingleton();

@@ -32,5 +32,11 @@ public interface IConfigService {
     String CONFIG_LOCATION = "weatherAlarm.location";
     String CONFIG_WEATHER_SERVICE_QUERY_INTERVAL = "weatherAlarm.weatherServiceQueryInterval";
 
+    /**
+     * Gets the configuration
+     *
+     * @param config the configuration key
+     * @return the configuration value or {@code null}
+     */
     String getConfigValue(String config);
 }

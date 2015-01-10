@@ -26,9 +26,9 @@ import weatherAlarm.model.WeatherAlarm;
 import weatherAlarm.model.WeatherConditions;
 import weatherAlarm.model.WeatherDataEnum;
 import weatherAlarm.services.IConfigService;
+import weatherAlarm.services.IWeatherAlarmService;
 import weatherAlarm.util.PredicateEnum;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -40,13 +40,17 @@ import java.util.stream.Collectors;
  */
 public class AlarmFilterHandler extends EventHandler {
     private static final Logger logger = LoggerFactory.getLogger(AlarmFilterHandler.class);
-    private List<WeatherAlarm> alarms = new ArrayList<>();
+    private IWeatherAlarmService alarmService;
+    private IConfigService configService;
 
     @Inject
-    public AlarmFilterHandler(IEventStream stream, IConfigService configService) {
+    public AlarmFilterHandler(IEventStream stream,
+                              IConfigService configService,
+                              IWeatherAlarmService weatherAlarmService) {
         super(stream);
-
-        addAlarms(configService);
+        this.alarmService = weatherAlarmService;
+        this.configService = configService;
+        addDefaultAlarm();
 
         final Observable<IEvent> observableFilterEvent = eventStream
                 .observe(WeatherConditionEvent.class)
@@ -64,21 +68,21 @@ public class AlarmFilterHandler extends EventHandler {
         eventStream.publish(observableFilterNotMatchEvent);
     }
 
-    private void addAlarms(IConfigService configService) {
+    private void addDefaultAlarm() {
         final String userName = configService.getConfigValue(IConfigService.CONFIG_USER_NAME);
         if (userName == null) {
-            logger.error("No user defined. Not adding alarm...");
+            logger.debug("No user defined. Not adding alarm...");
             return;
         }
         final String userEmail = configService.getConfigValue(IConfigService.CONFIG_USER_EMAIL);
         if (userEmail == null) {
-            logger.error("No user email defined. Not adding alarm...");
+            logger.debug("No user email defined. Not adding alarm...");
             return;
         }
         final String temperaturePredicate = configService.getConfigValue(IConfigService.CONFIG_TEMPERATURE_PREDICATE);
         final PredicateEnum predicateEnum = PredicateEnum.valueOf(temperaturePredicate);
         if (predicateEnum == null) {
-            logger.error("Invalid predicate enum " + temperaturePredicate + ". Not adding alarm...");
+            logger.debug("Invalid predicate enum " + temperaturePredicate + ". Not adding alarm...");
             return;
         }
         final String temperatureValue = configService.getConfigValue(IConfigService.CONFIG_TEMPERATURE_VALUE);
@@ -86,20 +90,20 @@ public class AlarmFilterHandler extends EventHandler {
         try {
             value = Integer.parseInt(temperatureValue);
         } catch (NumberFormatException e) {
-            logger.error("Invalid temperature value " + temperatureValue + ". Not adding alarm...");
+            logger.debug("Invalid temperature value " + temperatureValue + ". Not adding alarm...");
             return;
         }
 
         WeatherAlarm alarm = new WeatherAlarm(userName, userEmail);
         WeatherAlarm.ValuePredicate<Integer> predicate = new WeatherAlarm.ValuePredicate<>(predicateEnum, value);
         alarm.setCriteria(WeatherDataEnum.TEMPERATURE, predicate);
-        alarms.add(alarm);
+        alarmService.addAlarm(alarm);
     }
 
     private Func1<? super WeatherConditionEvent, ? extends Observable<IEvent>> evaluateEvent() {
         return event -> {
             WeatherConditions conditions = event.getConditions();
-            List<IEvent> eventList = alarms.stream()
+            List<IEvent> eventList = alarmService.getAlarms().stream()
                     .map(convertToEvent(conditions))
                     .collect(Collectors.toList());
             return Observable.from(eventList);
