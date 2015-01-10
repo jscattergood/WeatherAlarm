@@ -20,9 +20,11 @@ import weatherAlarm.model.WeatherAlarm;
 import weatherAlarm.model.WeatherConditions;
 
 /**
- * @author <a href="mailto:john.scattergood@gmail.com">John Scattergood</a> 1/4/2015
+ * This event is used to signal that an {@link weatherAlarm.model.WeatherAlarm} matched the filter criteria
+ *
+ * @author <a href="https://github.com/jscattergood">John Scattergood</a> 1/4/2015
  */
-public class FilterMatchEvent implements IModuleEvent {
+public class FilterMatchEvent implements IEvent {
     private WeatherAlarm alarm;
     private WeatherConditions conditions;
 

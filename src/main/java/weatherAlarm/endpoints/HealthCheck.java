@@ -19,7 +19,9 @@ package weatherAlarm.endpoints;
 import netflix.karyon.health.HealthCheckHandler;
 
 /**
- * @author <a href="mailto:john.scattergood@gmail.com">John Scattergood</a> 12/28/2014
+ * This class returns the status of the service
+ *
+ * @author <a href="https://github.com/jscattergood">John Scattergood</a> 12/28/2014
  */
 public class HealthCheck implements HealthCheckHandler {
     @Override

@@ -19,12 +19,14 @@ package weatherAlarm.events;
 import rx.Observable;
 
 /**
- * @author <a href="mailto:john.scattergood@gmail.com">John Scattergood</a> 1/10/2015
+ * This interface represents a class that provides the ability to publish and observe a stream of events
+ *
+ * @author <a href="https://github.com/jscattergood">John Scattergood</a> 1/10/2015
  */
 public interface IEventStream {
-    void publish(Observable<IModuleEvent> event);
+    void publish(Observable<IEvent> event);
 
-    Observable<IModuleEvent> observe();
+    Observable<IEvent> observe();
 
     <T> Observable<T> observe(Class<T> eventClass);
 }

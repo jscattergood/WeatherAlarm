@@ -17,8 +17,10 @@
 package weatherAlarm.model;
 
 /**
- * @author <a href="mailto:john.scattergood@gmail.com">John Scattergood</a> 1/4/2015
+ * This enum contains the different types of tracked weather data.
+ *
+ * @author <a href="https://github.com/jscattergood">John Scattergood</a> 1/4/2015
  */
 public enum WeatherDataEnum {
-    TEMPERATURE;
+    TEMPERATURE
 }

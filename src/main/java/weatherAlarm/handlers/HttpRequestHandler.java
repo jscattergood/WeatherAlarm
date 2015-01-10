@@ -24,7 +24,9 @@ import io.reactivex.netty.protocol.http.server.RequestHandler;
 import rx.Observable;
 
 /**
- * @author <a href="mailto:john.scattergood@gmail.com">John Scattergood</a> 12/28/2014
+ * This class handles http requests for service endpoints.
+ *
+ * @author <a href="https://github.com/jscattergood">John Scattergood</a> 12/28/2014
  */
 public class HttpRequestHandler implements RequestHandler<ByteBuf, ByteBuf> {
 

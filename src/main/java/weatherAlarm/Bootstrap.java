@@ -24,7 +24,9 @@ import weatherAlarm.endpoints.HealthCheck;
 import weatherAlarm.handlers.HttpRequestHandler;
 
 /**
- * @author <a href="mailto:john.scattergood@gmail.com">John Scattergood</a> 12/27/2014
+ * This class contains the default main method for the application.
+ *
+ * @author <a href="https://github.com/jscattergood">John Scattergood</a> 12/27/2014
  */
 public class Bootstrap {
 

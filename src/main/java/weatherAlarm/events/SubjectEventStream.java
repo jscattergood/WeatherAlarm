@@ -20,18 +20,21 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 
 /**
- * @author <a href="mailto:john.scattergood@gmail.com">John Scattergood</a> 1/4/2015
+ * This implementation of {@link weatherAlarm.events.IEventStream} uses a
+ * {@link rx.subjects.Subject} to communicate events.
+ *
+ * @author <a href="https://github.com/jscattergood">John Scattergood</a> 1/4/2015
  */
-public class PublishEventStream implements IEventStream {
-    private BehaviorSubject<IModuleEvent> stream = BehaviorSubject.create();
+public class SubjectEventStream implements IEventStream {
+    private BehaviorSubject<IEvent> stream = BehaviorSubject.create();
 
     @Override
-    public void publish(Observable<IModuleEvent> event) {
+    public void publish(Observable<IEvent> event) {
         event.doOnNext(stream::onNext).subscribe();
     }
 
     @Override
-    public Observable<IModuleEvent> observe() {
+    public Observable<IEvent> observe() {
         return stream;
     }
 

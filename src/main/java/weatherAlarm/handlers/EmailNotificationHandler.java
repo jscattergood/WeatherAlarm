@@ -39,7 +39,7 @@ import java.util.Properties;
 /**
  * This class is responsible for performing email notifications
  *
- * @author <a href="mailto:john.scattergood@gmail.com">John Scattergood</a> 12/30/2014
+ * @author <a href="https://github.com/jscattergood">John Scattergood</a> 12/30/2014
  */
 public class EmailNotificationHandler extends AbstractNotificationHandler {
     private static final Logger logger = LoggerFactory.getLogger(EmailNotificationHandler.class);
@@ -59,17 +59,17 @@ public class EmailNotificationHandler extends AbstractNotificationHandler {
     public EmailNotificationHandler(IEventStream stream, IConfigService configService) {
         super(stream);
 
-        final String emailHostName = configService.getConfigValue("weatherAlarm.emailHostName");
+        final String emailHostName = configService.getConfigValue(IConfigService.CONFIG_EMAIL_HOST_NAME);
         if (emailHostName == null) {
             logger.error("No emailHostName defined. Cannot send notifications...");
             return;
         }
-        final String emailAuthUser = configService.getConfigValue("weatherAlarm.emailAuthUser");
+        final String emailAuthUser = configService.getConfigValue(IConfigService.CONFIG_EMAIL_AUTH_USER);
         if (emailAuthUser == null) {
             logger.error("No emailAuthUser email defined. Cannot send notifications...");
             return;
         }
-        final String emailAuthPass = configService.getConfigValue("weatherAlarm.emailAuthPass");
+        final String emailAuthPass = configService.getConfigValue(IConfigService.CONFIG_EMAIL_AUTH_PASS);
         if (emailAuthPass == null) {
             logger.error("No emailAuthPass defined. Cannot send notifications...");
             return;
@@ -81,12 +81,12 @@ public class EmailNotificationHandler extends AbstractNotificationHandler {
     }
 
     @Override
-    protected Func1<? super FilterMatchEvent, ? extends Observable<IModuleEvent>> sendNotification() {
+    protected Func1<? super FilterMatchEvent, ? extends Observable<IEvent>> sendNotification() {
         return event -> {
-            if (emailHostName == null || emailHostName.isEmpty()) {
-                return Observable.just(new NotificationNotSentEvent("Email configuration is undefined"));
-            }
             WeatherAlarm alarm = event.getAlarm();
+            if (emailHostName == null || emailHostName.isEmpty()) {
+                return Observable.just(new NotificationNotSentEvent(alarm, "Email configuration is undefined"));
+            }
             try {
                 String host = emailHostName;
                 String authUser = emailAuthUser;
@@ -118,9 +118,9 @@ public class EmailNotificationHandler extends AbstractNotificationHandler {
 
             } catch (MessagingException e) {
                 logger.error("Exception creating email", e);
-                return Observable.just(new NotificationNotSentEvent(e.getMessage()));
+                return Observable.just(new NotificationNotSentEvent(alarm, e.getMessage()));
             }
-            return Observable.just(new NotificationSentEvent(event.getAlarm(), Instant.now()));
+            return Observable.just(new NotificationSentEvent(alarm, Instant.now()));
         };
     }
 }

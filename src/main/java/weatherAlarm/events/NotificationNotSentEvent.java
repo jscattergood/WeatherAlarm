@@ -16,15 +16,24 @@
 
 package weatherAlarm.events;
 
+import weatherAlarm.model.WeatherAlarm;
+
 /**
- * @author <a href="mailto:john.scattergood@gmail.com">John Scattergood</a> 1/4/2015
+ * This event is used to signal that a notification could not be created for a {@link weatherAlarm.model.WeatherAlarm}.
+ *
+ * @author <a href="https://github.com/jscattergood">John Scattergood</a> 1/4/2015
  */
-public class NotificationNotSentEvent implements IModuleEvent {
+public class NotificationNotSentEvent implements IEvent {
+    private WeatherAlarm alarm;
     private String reason;
 
-    public NotificationNotSentEvent(String reason) {
-
+    public NotificationNotSentEvent(WeatherAlarm alarm, String reason) {
+        this.alarm = alarm;
         this.reason = reason;
+    }
+
+    public WeatherAlarm getAlarm() {
+        return alarm;
     }
 
     public String getReason() {
@@ -34,7 +43,8 @@ public class NotificationNotSentEvent implements IModuleEvent {
     @Override
     public String toString() {
         return "NotificationNotSentEvent[" +
-                "reason='" + reason + '\'' +
+                "alarm=" + alarm +
+                ", reason='" + reason + '\'' +
                 ']';
     }
 }

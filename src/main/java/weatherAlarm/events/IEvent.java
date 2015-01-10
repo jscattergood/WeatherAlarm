@@ -17,7 +17,9 @@
 package weatherAlarm.events;
 
 /**
- * @author <a href="mailto:john.scattergood@gmail.com">John Scattergood</a> 1/3/2015
+ * This is a marker interface for all events on the {@link weatherAlarm.events.IEventStream}
+ *
+ * @author <a href="https://github.com/jscattergood">John Scattergood</a> 1/3/2015
  */
-public interface IModuleEvent {
+public interface IEvent {
 }

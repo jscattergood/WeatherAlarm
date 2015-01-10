@@ -19,7 +19,9 @@ package weatherAlarm.handlers;
 import weatherAlarm.events.IEventStream;
 
 /**
- * @author <a href="mailto:john.scattergood@gmail.com">John Scattergood</a> 1/3/2015
+ * This is the base class for all event handlers.
+ *
+ * @author <a href="https://github.com/jscattergood">John Scattergood</a> 1/3/2015
  */
 public abstract class EventHandler {
 

@@ -17,7 +17,9 @@
 package weatherAlarm.services;
 
 /**
- * @author <a href="mailto:john.scattergood@gmail.com">John Scattergood</a> 1/9/2015
+ * This interface represents a class that provides the application's configuration.
+ *
+ * @author <a href="https://github.com/jscattergood">John Scattergood</a> 1/9/2015
  */
 public interface IConfigService {
     String CONFIG_USER_NAME = "weatherAlarm.userName";
@@ -31,6 +33,4 @@ public interface IConfigService {
     String CONFIG_WEATHER_SERVICE_QUERY_INTERVAL = "weatherAlarm.weatherServiceQueryInterval";
 
     String getConfigValue(String config);
-
-    void setConfigValue(String config, String value);
 }

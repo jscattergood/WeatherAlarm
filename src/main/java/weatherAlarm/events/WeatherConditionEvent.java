@@ -25,9 +25,11 @@ import weatherAlarm.model.WeatherConditions;
 import java.io.IOException;
 
 /**
- * @author <a href="mailto:john.scattergood@gmail.com">John Scattergood</a> 1/3/2015
+ * This event is used to signal that new {@link weatherAlarm.model.WeatherConditions} have been observed.
+ *
+ * @author <a href="https://github.com/jscattergood">John Scattergood</a> 1/3/2015
  */
-public class WeatherConditionEvent implements IModuleEvent {
+public class WeatherConditionEvent implements IEvent {
     public static final Logger logger = LoggerFactory.getLogger(WeatherConditionEvent.class);
     private WeatherConditions conditions;
 
@@ -42,8 +44,7 @@ public class WeatherConditionEvent implements IModuleEvent {
                             .get("channel")
                             .get("item")
                             .get("condition")
-                            .get("temp")
-                            .asInt()
+                            .get("temp").asInt()
             );
         } catch (IOException e) {
             logger.error("Could not create WeatherConditionEvent from JSON string", e);

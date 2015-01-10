@@ -19,21 +19,24 @@ package weatherAlarm.handlers;
 import rx.Observable;
 import rx.functions.Func1;
 import weatherAlarm.events.FilterMatchEvent;
+import weatherAlarm.events.IEvent;
 import weatherAlarm.events.IEventStream;
-import weatherAlarm.events.IModuleEvent;
 
 /**
- * @author <a href="mailto:john.scattergood@gmail.com">John Scattergood</a> 1/7/2015
+ * This is the base class for all notification handlers. It automatically subscribes to the
+ * {@link weatherAlarm.events.IEventStream} for relevant events.
+ *
+ * @author <a href="https://github.com/jscattergood">John Scattergood</a> 1/7/2015
  */
 public abstract class AbstractNotificationHandler extends EventHandler {
     public AbstractNotificationHandler(IEventStream stream) {
         super(stream);
 
-        Observable<IModuleEvent> observableEvent = eventStream
+        Observable<IEvent> observableEvent = eventStream
                 .observe(FilterMatchEvent.class)
                 .flatMap(sendNotification());
         eventStream.publish(observableEvent);
     }
 
-    protected abstract Func1<? super FilterMatchEvent, ? extends Observable<IModuleEvent>> sendNotification();
+    protected abstract Func1<? super FilterMatchEvent, ? extends Observable<IEvent>> sendNotification();
 }

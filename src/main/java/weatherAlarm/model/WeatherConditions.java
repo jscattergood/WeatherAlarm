@@ -20,7 +20,9 @@ import java.util.EnumMap;
 import java.util.Map;
 
 /**
- * @author <a href="mailto:john.scattergood@gmail.com">John Scattergood</a> 1/4/2015
+ * This class contains data related to the weather conditions.
+ *
+ * @author <a href="https://github.com/jscattergood">John Scattergood</a> 1/4/2015
  */
 public class WeatherConditions {
     private Map<WeatherDataEnum, Object> weatherData = new EnumMap<>(WeatherDataEnum.class);

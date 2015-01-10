@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 /**
  * This class is responsible for filtering current weather conditions to determining if an alarm should be raised
  *
- * @author <a href="mailto:john.scattergood@gmail.com">John Scattergood</a> 12/30/2014
+ * @author <a href="https://github.com/jscattergood">John Scattergood</a> 12/30/2014
  */
 public class AlarmFilterHandler extends EventHandler {
     private static final Logger logger = LoggerFactory.getLogger(AlarmFilterHandler.class);
@@ -48,40 +48,40 @@ public class AlarmFilterHandler extends EventHandler {
 
         addAlarms(configService);
 
-        final Observable<IModuleEvent> observableFilterEvent = eventStream
+        final Observable<IEvent> observableFilterEvent = eventStream
                 .observe(WeatherConditionEvent.class)
                 .flatMap(evaluateEvent());
         eventStream.publish(observableFilterEvent);
 
-        final Observable<IModuleEvent> observableNotificationEvent = eventStream
+        final Observable<IEvent> observableNotificationEvent = eventStream
                 .observe(NotificationSentEvent.class)
                 .flatMap(handleNotification());
         eventStream.publish(observableNotificationEvent);
 
-        final Observable<IModuleEvent> observableFilterNotMatchEvent = eventStream
+        final Observable<IEvent> observableFilterNotMatchEvent = eventStream
                 .observe(FilterNoMatchEvent.class)
                 .flatMap(handleFilterNoMatch());
         eventStream.publish(observableFilterNotMatchEvent);
     }
 
     private void addAlarms(IConfigService configService) {
-        final String userName = configService.getConfigValue("weatherAlarm.userName");
+        final String userName = configService.getConfigValue(IConfigService.CONFIG_USER_NAME);
         if (userName == null) {
             logger.error("No user defined. Not adding alarm...");
             return;
         }
-        final String userEmail = configService.getConfigValue("weatherAlarm.userEmail");
+        final String userEmail = configService.getConfigValue(IConfigService.CONFIG_USER_EMAIL);
         if (userEmail == null) {
             logger.error("No user email defined. Not adding alarm...");
             return;
         }
-        final String temperaturePredicate = configService.getConfigValue("weatherAlarm.temperaturePredicate");
+        final String temperaturePredicate = configService.getConfigValue(IConfigService.CONFIG_TEMPERATURE_PREDICATE);
         final PredicateEnum predicateEnum = PredicateEnum.valueOf(temperaturePredicate);
         if (predicateEnum == null) {
             logger.error("Invalid predicate enum " + temperaturePredicate + ". Not adding alarm...");
             return;
         }
-        final String temperatureValue = configService.getConfigValue("weatherAlarm.temperatureValue");
+        final String temperatureValue = configService.getConfigValue(IConfigService.CONFIG_TEMPERATURE_VALUE);
         final Integer value;
         try {
             value = Integer.parseInt(temperatureValue);
@@ -96,17 +96,17 @@ public class AlarmFilterHandler extends EventHandler {
         alarms.add(alarm);
     }
 
-    private Func1<? super WeatherConditionEvent, ? extends Observable<IModuleEvent>> evaluateEvent() {
+    private Func1<? super WeatherConditionEvent, ? extends Observable<IEvent>> evaluateEvent() {
         return event -> {
             WeatherConditions conditions = event.getConditions();
-            List<IModuleEvent> eventList = alarms.stream()
+            List<IEvent> eventList = alarms.stream()
                     .map(convertToEvent(conditions))
                     .collect(Collectors.toList());
             return Observable.from(eventList);
         };
     }
 
-    private Function<WeatherAlarm, IModuleEvent> convertToEvent(WeatherConditions conditions) {
+    private Function<WeatherAlarm, IEvent> convertToEvent(WeatherConditions conditions) {
         return alarm -> {
             boolean match = alarm.matchesCriteria(WeatherDataEnum.TEMPERATURE, conditions.getTemperature());
             boolean shouldSend = alarm.shouldSendNotification();
@@ -120,7 +120,7 @@ public class AlarmFilterHandler extends EventHandler {
         };
     }
 
-    private Func1<? super NotificationSentEvent, ? extends Observable<IModuleEvent>> handleNotification() {
+    private Func1<? super NotificationSentEvent, ? extends Observable<IEvent>> handleNotification() {
         return event -> {
             WeatherAlarm alarm = event.getAlarm();
             alarm.setLastNotification(event.getEventTime());
@@ -128,7 +128,7 @@ public class AlarmFilterHandler extends EventHandler {
         };
     }
 
-    private Func1<? super FilterNoMatchEvent, ? extends Observable<IModuleEvent>> handleFilterNoMatch() {
+    private Func1<? super FilterNoMatchEvent, ? extends Observable<IEvent>> handleFilterNoMatch() {
         return event -> {
             WeatherAlarm alarm = event.getAlarm();
             // Reset the alarm so that it can be re-triggered if criteria met later

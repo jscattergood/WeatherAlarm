@@ -19,9 +19,12 @@ package weatherAlarm.events;
 import weatherAlarm.model.WeatherAlarm;
 
 /**
- * @author <a href="mailto:john.scattergood@gmail.com">John Scattergood</a> 1/4/2015
+ * This event is used to signal that a {@link weatherAlarm.model.WeatherAlarm} did not match the filter criteria
+ * and includes the {@link weatherAlarm.events.FilterNoMatchEvent.Reason} that it didn't match.
+ *
+ * @author <a href="https://github.com/jscattergood">John Scattergood</a> 1/4/2015
  */
-public class FilterNoMatchEvent implements IModuleEvent {
+public class FilterNoMatchEvent implements IEvent {
     private Reason reason;
     private WeatherAlarm alarm;
 

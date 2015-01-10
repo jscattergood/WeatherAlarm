@@ -17,7 +17,9 @@
 package weatherAlarm.util;
 
 /**
- * @author <a href="mailto:john.scattergood@gmail.com">John Scattergood</a> 1/4/2015
+ * This enum lists common value comparison predicates.
+ *
+ * @author <a href="https://github.com/jscattergood">John Scattergood</a> 1/4/2015
  */
 public enum PredicateEnum {
     EQ,

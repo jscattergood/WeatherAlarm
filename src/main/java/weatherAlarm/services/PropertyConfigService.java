@@ -24,7 +24,10 @@ import java.io.InputStream;
 import java.util.Properties;
 
 /**
- * @author <a href="mailto:john.scattergood@gmail.com">John Scattergood</a> 1/8/2015
+ * This class is a {@link java.util.Properties} based implementation of the
+ * {@link weatherAlarm.services.IConfigService}. It supports property overrides via JVM arguments.
+ *
+ * @author <a href="https://github.com/jscattergood">John Scattergood</a> 1/8/2015
  */
 public class PropertyConfigService implements IConfigService {
     public static final String CONFIG_PROPERTIES = "config.properties";
@@ -48,10 +51,5 @@ public class PropertyConfigService implements IConfigService {
     @Override
     public String getConfigValue(String config) {
         return (String) properties.get(config);
-    }
-
-    @Override
-    public void setConfigValue(String config, String value) {
-        properties.put(config, value);
     }
 }

@@ -29,8 +29,8 @@ import org.slf4j.LoggerFactory;
 import rx.Observable;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import weatherAlarm.events.IEvent;
 import weatherAlarm.events.IEventStream;
-import weatherAlarm.events.IModuleEvent;
 import weatherAlarm.events.WeatherConditionEvent;
 import weatherAlarm.services.IConfigService;
 
@@ -42,7 +42,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * This class is responsible for querying the Weather Service for the current conditions
  *
- * @author <a href="mailto:john.scattergood@gmail.com">John Scattergood</a> 12/28/2014
+ * @author <a href="https://github.com/jscattergood">John Scattergood</a> 12/28/2014
  */
 public class WeatherQueryHandler extends EventHandler {
     private static final Logger logger = LoggerFactory.getLogger(WeatherQueryHandler.class);
@@ -57,11 +57,11 @@ public class WeatherQueryHandler extends EventHandler {
     public WeatherQueryHandler(IEventStream stream, IConfigService configService) {
         super(stream);
 
-        location = configService.getConfigValue("weatherAlarm.location");
+        location = configService.getConfigValue(IConfigService.CONFIG_LOCATION);
         if (location == null) {
             logger.error("No location defined");
         }
-        final String intervalProperty = configService.getConfigValue("weatherAlarm.weatherServiceQueryInterval");
+        final String intervalProperty = configService.getConfigValue(IConfigService.CONFIG_WEATHER_SERVICE_QUERY_INTERVAL);
         long queryInterval;
         if (intervalProperty != null) {
             queryInterval = Long.valueOf(intervalProperty);
@@ -76,7 +76,7 @@ public class WeatherQueryHandler extends EventHandler {
 
     private void requestWeatherData() {
         RibbonRequest<ByteBuf> request = buildRequest();
-        final Observable<IModuleEvent> event = request
+        final Observable<IEvent> event = request
                 .observe()
                 .map(mapJsonToEvent());
         eventStream.publish(event);

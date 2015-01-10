@@ -20,14 +20,17 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.netflix.governator.guice.LifecycleInjectorBuilderSuite;
 import weatherAlarm.events.IEventStream;
-import weatherAlarm.events.PublishEventStream;
+import weatherAlarm.events.SubjectEventStream;
 import weatherAlarm.handlers.AlarmFilterHandler;
+import weatherAlarm.handlers.EmailNotificationHandler;
 import weatherAlarm.handlers.WeatherQueryHandler;
 import weatherAlarm.services.IConfigService;
 import weatherAlarm.services.PropertyConfigService;
 
 /**
- * @author <a href="mailto:john.scattergood@gmail.com">John Scattergood</a> 1/9/2015
+ * This class is the Guice module that configures the application.
+ *
+ * @author <a href="https://github.com/jscattergood">John Scattergood</a> 1/9/2015
  */
 public class WeatherAlarmModule extends AbstractModule {
     public static LifecycleInjectorBuilderSuite asSuite() {
@@ -37,15 +40,15 @@ public class WeatherAlarmModule extends AbstractModule {
     @Override
     protected void configure() {
         bind(IConfigService.class).to(PropertyConfigService.class).asEagerSingleton();
-        bind(IEventStream.class).to(PublishEventStream.class).asEagerSingleton();
+        bind(IEventStream.class).to(SubjectEventStream.class).asEagerSingleton();
         bind(WeatherQueryHandler.class).asEagerSingleton();
         bind(AlarmFilterHandler.class).asEagerSingleton();
-        //bind(EmailNotificationHandler.class).asEagerSingleton();
+        bind(EmailNotificationHandler.class).asEagerSingleton();
     }
 
     @Provides
-    PublishEventStream providesEventStream() {
-        PublishEventStream events = new PublishEventStream();
+    SubjectEventStream providesEventStream() {
+        SubjectEventStream events = new SubjectEventStream();
         events.observe().doOnNext(System.out::println).subscribe();
         return events;
     }

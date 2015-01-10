@@ -21,9 +21,11 @@ import weatherAlarm.model.WeatherAlarm;
 import java.time.Instant;
 
 /**
- * @author <a href="mailto:john.scattergood@gmail.com">John Scattergood</a> 1/4/2015
+ * This event is used to signal that a notification was sent for a {@link weatherAlarm.model.WeatherAlarm}.
+ *
+ * @author <a href="https://github.com/jscattergood">John Scattergood</a> 1/4/2015
  */
-public class NotificationSentEvent implements IModuleEvent {
+public class NotificationSentEvent implements IEvent {
     private WeatherAlarm alarm;
     private Instant eventTime;
 

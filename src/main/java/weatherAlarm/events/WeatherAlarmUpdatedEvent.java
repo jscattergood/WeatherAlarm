@@ -19,9 +19,11 @@ package weatherAlarm.events;
 import weatherAlarm.model.WeatherAlarm;
 
 /**
- * @author <a href="mailto:john.scattergood@gmail.com">John Scattergood</a> 1/7/2015
+ * This event is used to signal that a {@link weatherAlarm.model.WeatherAlarm} has been updated.
+ *
+ * @author <a href="https://github.com/jscattergood">John Scattergood</a> 1/7/2015
  */
-public class WeatherAlarmUpdatedEvent implements IModuleEvent {
+public class WeatherAlarmUpdatedEvent implements IEvent {
     private WeatherAlarm alarm;
 
     public WeatherAlarmUpdatedEvent(WeatherAlarm alarm) {

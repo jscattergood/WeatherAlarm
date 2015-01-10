@@ -23,7 +23,9 @@ import java.util.EnumMap;
 import java.util.Map;
 
 /**
- * @author <a href="mailto:john.scattergood@gmail.com">John Scattergood</a> 1/4/2015
+ * This is the core model class for weather alarms.  It contains the user information and the alarm criteria.
+ *
+ * @author <a href="https://github.com/jscattergood">John Scattergood</a> 1/4/2015
  */
 public class WeatherAlarm {
     private String username;
