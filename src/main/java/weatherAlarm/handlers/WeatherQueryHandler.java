@@ -33,12 +33,16 @@ import rx.schedulers.Schedulers;
 import weatherAlarm.events.IEvent;
 import weatherAlarm.events.IEventStream;
 import weatherAlarm.events.WeatherConditionEvent;
+import weatherAlarm.model.WeatherAlarm;
 import weatherAlarm.services.IConfigService;
+import weatherAlarm.services.IWeatherAlarmService;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * This class is responsible for querying the Weather Service for the current conditions
@@ -51,18 +55,17 @@ public class WeatherQueryHandler extends EventHandler {
     private static final long SECS_PER_MIN = 60;
     private static final long DEFAULT_QUERY_INTERVAL = 15 * SECS_PER_MIN;
 
-    private String location;
     private HttpResourceGroup cachedResourceGroup;
     private HttpRequestTemplate<ByteBuf> cachedRequestTemplate;
+    private IWeatherAlarmService alarmService;
 
     @Inject
-    public WeatherQueryHandler(IEventStream stream, IConfigService configService) {
+    public WeatherQueryHandler(IEventStream stream,
+                               IConfigService configService,
+                               IWeatherAlarmService weatherAlarmService) {
         super(stream);
+        this.alarmService = weatherAlarmService;
 
-        location = configService.getConfigValue(IConfigService.CONFIG_LOCATION);
-        if (location == null) {
-            logger.error("No location defined");
-        }
         final String intervalProperty = configService.getConfigValue(IConfigService.CONFIG_WEATHER_SERVICE_QUERY_INTERVAL);
         long queryInterval;
         if (intervalProperty != null) {
@@ -77,14 +80,17 @@ public class WeatherQueryHandler extends EventHandler {
     }
 
     private void requestWeatherData() {
-        RibbonRequest<ByteBuf> request = buildRequest();
-        final Observable<IEvent> event = request
-                .observe()
-                .map(mapJsonToEvent());
+        List<String> locations = alarmService.getAlarms().stream()
+                .map(WeatherAlarm::getLocation)
+                .collect(Collectors.toList());
+        Observable<IEvent> event = Observable.from(locations)
+                .flatMap(location -> buildRequest(location)
+                        .observe()
+                        .map(mapJsonToEvent()));
         eventStream.publish(event);
     }
 
-    private RibbonRequest<ByteBuf> buildRequest() {
+    private RibbonRequest<ByteBuf> buildRequest(String location) {
         HttpRequestTemplate<ByteBuf> weatherQueryTemplate = getRequestTemplate();
         return weatherQueryTemplate.requestBuilder()
                 .withRequestProperty("location", location)

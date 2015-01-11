@@ -30,6 +30,7 @@ import java.util.Map;
 public class WeatherAlarm {
     private String username;
     private String emailAddress;
+    private String location;
     private Map<WeatherDataEnum, ValuePredicate> criteria = new EnumMap<>(WeatherDataEnum.class);
     private Instant lastNotification;
     private boolean triggered;
@@ -53,6 +54,14 @@ public class WeatherAlarm {
 
     public void setEmailAddress(String emailAddress) {
         this.emailAddress = emailAddress;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public ValuePredicate<?> getCriteria(WeatherDataEnum weatherDataEnum) {
