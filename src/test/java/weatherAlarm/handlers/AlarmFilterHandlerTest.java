@@ -43,9 +43,7 @@ public class AlarmFilterHandlerTest {
         new AlarmFilterHandler(stream, getMockConfigService(), getMockAlarmService());
         WeatherConditions conditions = new WeatherConditions();
         conditions.setTemperature(1);
-        stream.observe(FilterMatchEvent.class).forEach(event -> {
-            received[0] = true;
-        });
+        stream.observe(FilterMatchEvent.class).forEach(event -> received[0] = true);
         stream.publish(Observable.just(new WeatherConditionEvent(conditions)));
         Assert.assertTrue("No event received", received[0]);
     }
@@ -57,9 +55,7 @@ public class AlarmFilterHandlerTest {
         new AlarmFilterHandler(stream, getMockConfigService(), getMockAlarmService());
         WeatherConditions conditions = new WeatherConditions();
         conditions.setTemperature(-1);
-        stream.observe(FilterNoMatchEvent.class).forEach(event -> {
-            received[0] = true;
-        });
+        stream.observe(FilterNoMatchEvent.class).forEach(event -> received[0] = true);
         stream.publish(Observable.just(new WeatherConditionEvent(conditions)));
         Assert.assertTrue("No event received", received[0]);
     }
@@ -70,9 +66,7 @@ public class AlarmFilterHandlerTest {
         SubjectEventStream stream = new SubjectEventStream();
         IWeatherAlarmService mockAlarmService = getMockAlarmService();
         new AlarmFilterHandler(stream, getMockConfigService(), mockAlarmService);
-        stream.observe(WeatherAlarmUpdatedEvent.class).forEach(event -> {
-            received[0] = true;
-        });
+        stream.observe(WeatherAlarmUpdatedEvent.class).forEach(event -> received[0] = true);
         WeatherAlarm alarm = mockAlarmService.getAlarms().get(0);
         Instant now = Instant.now();
         stream.publish(Observable.just(new NotificationSentEvent(alarm, now)));
@@ -87,9 +81,7 @@ public class AlarmFilterHandlerTest {
         SubjectEventStream stream = new SubjectEventStream();
         IWeatherAlarmService mockAlarmService = getMockAlarmService();
         new AlarmFilterHandler(stream, getMockConfigService(), getMockAlarmService());
-        stream.observe(WeatherAlarmUpdatedEvent.class).forEach(event -> {
-            received[0] = true;
-        });
+        stream.observe(WeatherAlarmUpdatedEvent.class).forEach(event -> received[0] = true);
         WeatherAlarm alarm = mockAlarmService.getAlarms().get(0);
         alarm.setTriggered(true);
         stream.publish(Observable.just(new FilterNoMatchEvent(FilterNoMatchEvent.Reason.CRITERIA, alarm)));
@@ -104,9 +96,7 @@ public class AlarmFilterHandlerTest {
         SubjectEventStream stream = new SubjectEventStream();
         IWeatherAlarmService mockAlarmService = getMockAlarmService();
         new AlarmFilterHandler(stream, getMockConfigService(), getMockAlarmService());
-        stream.observe(WeatherAlarmUpdatedEvent.class).forEach(event -> {
-            received[0] = true;
-        });
+        stream.observe(WeatherAlarmUpdatedEvent.class).forEach(event -> received[0] = true);
         WeatherAlarm alarm = mockAlarmService.getAlarms().get(0);
         alarm.setTriggered(true);
         alarm.setLastNotification(Instant.now());
