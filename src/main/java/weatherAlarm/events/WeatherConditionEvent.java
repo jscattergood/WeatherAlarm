@@ -52,6 +52,10 @@ public class WeatherConditionEvent implements IEvent {
         }
     }
 
+    public WeatherConditionEvent(WeatherConditions conditions) {
+        this.conditions = conditions;
+    }
+
     public WeatherConditions getConditions() {
         return conditions;
     }
