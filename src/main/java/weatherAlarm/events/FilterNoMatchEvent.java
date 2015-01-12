@@ -25,8 +25,8 @@ import weatherAlarm.model.WeatherAlarm;
  * @author <a href="https://github.com/jscattergood">John Scattergood</a> 1/4/2015
  */
 public class FilterNoMatchEvent implements IEvent {
-    private Reason reason;
-    private WeatherAlarm alarm;
+    private final Reason reason;
+    private final WeatherAlarm alarm;
 
     public FilterNoMatchEvent(Reason reason, WeatherAlarm alarm) {
         this.reason = reason;

@@ -25,7 +25,7 @@ import java.util.Map;
  * @author <a href="https://github.com/jscattergood">John Scattergood</a> 1/4/2015
  */
 public class WeatherConditions {
-    private Map<WeatherDataEnum, Object> weatherData = new EnumMap<>(WeatherDataEnum.class);
+    private final Map<WeatherDataEnum, Object> weatherData = new EnumMap<>(WeatherDataEnum.class);
 
     public Integer getTemperature() {
         return (Integer) weatherData.get(WeatherDataEnum.TEMPERATURE);

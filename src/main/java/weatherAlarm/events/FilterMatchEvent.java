@@ -25,8 +25,8 @@ import weatherAlarm.model.WeatherConditions;
  * @author <a href="https://github.com/jscattergood">John Scattergood</a> 1/4/2015
  */
 public class FilterMatchEvent implements IEvent {
-    private WeatherAlarm alarm;
-    private WeatherConditions conditions;
+    private final WeatherAlarm alarm;
+    private final WeatherConditions conditions;
 
     public FilterMatchEvent(WeatherAlarm alarm, WeatherConditions conditions) {
         this.alarm = alarm;

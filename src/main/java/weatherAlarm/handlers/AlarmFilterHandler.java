@@ -42,8 +42,8 @@ import java.util.stream.Collectors;
 @Singleton
 public class AlarmFilterHandler extends EventHandler {
     private static final Logger logger = LoggerFactory.getLogger(AlarmFilterHandler.class);
-    private IWeatherAlarmService alarmService;
-    private IConfigService configService;
+    private final IWeatherAlarmService alarmService;
+    private final IConfigService configService;
 
     @Inject
     public AlarmFilterHandler(IEventStream stream,

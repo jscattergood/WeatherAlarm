@@ -24,8 +24,8 @@ import weatherAlarm.model.WeatherAlarm;
  * @author <a href="https://github.com/jscattergood">John Scattergood</a> 1/4/2015
  */
 public class NotificationNotSentEvent implements IEvent {
-    private WeatherAlarm alarm;
-    private String reason;
+    private final WeatherAlarm alarm;
+    private final String reason;
 
     public NotificationNotSentEvent(WeatherAlarm alarm, String reason) {
         this.alarm = alarm;

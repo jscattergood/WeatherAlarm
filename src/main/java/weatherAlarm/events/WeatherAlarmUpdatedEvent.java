@@ -24,7 +24,7 @@ import weatherAlarm.model.WeatherAlarm;
  * @author <a href="https://github.com/jscattergood">John Scattergood</a> 1/7/2015
  */
 public class WeatherAlarmUpdatedEvent implements IEvent {
-    private WeatherAlarm alarm;
+    private final WeatherAlarm alarm;
 
     public WeatherAlarmUpdatedEvent(WeatherAlarm alarm) {
         this.alarm = alarm;

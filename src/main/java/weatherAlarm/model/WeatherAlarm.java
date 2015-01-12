@@ -28,10 +28,10 @@ import java.util.Map;
  * @author <a href="https://github.com/jscattergood">John Scattergood</a> 1/4/2015
  */
 public class WeatherAlarm {
+    private final Map<WeatherDataEnum, ValuePredicate> criteria = new EnumMap<>(WeatherDataEnum.class);
     private String username;
     private String emailAddress;
     private String location;
-    private Map<WeatherDataEnum, ValuePredicate> criteria = new EnumMap<>(WeatherDataEnum.class);
     private Instant lastNotification;
     private boolean triggered;
 
@@ -112,8 +112,8 @@ public class WeatherAlarm {
     }
 
     public static class ValuePredicate<T> {
-        private PredicateEnum predicate;
-        private Comparable<T> value;
+        private final PredicateEnum predicate;
+        private final Comparable<T> value;
 
         public ValuePredicate(PredicateEnum predicate, Comparable<T> value) {
             this.predicate = predicate;

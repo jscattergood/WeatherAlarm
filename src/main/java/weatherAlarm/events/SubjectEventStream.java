@@ -26,7 +26,7 @@ import rx.subjects.BehaviorSubject;
  * @author <a href="https://github.com/jscattergood">John Scattergood</a> 1/4/2015
  */
 public class SubjectEventStream implements IEventStream {
-    private BehaviorSubject<IEvent> stream = BehaviorSubject.create();
+    private final BehaviorSubject<IEvent> stream = BehaviorSubject.create();
 
     @Override
     public void publish(Observable<IEvent> event) {

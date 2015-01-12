@@ -54,10 +54,9 @@ public class WeatherQueryHandler extends EventHandler {
     private static final Logger logger = LoggerFactory.getLogger(WeatherQueryHandler.class);
     private static final long SECS_PER_MIN = 60;
     private static final long DEFAULT_QUERY_INTERVAL = 15 * SECS_PER_MIN;
-
+    private final IWeatherAlarmService alarmService;
     private HttpResourceGroup cachedResourceGroup;
     private HttpRequestTemplate<ByteBuf> cachedRequestTemplate;
-    private IWeatherAlarmService alarmService;
 
     @Inject
     public WeatherQueryHandler(IEventStream stream,

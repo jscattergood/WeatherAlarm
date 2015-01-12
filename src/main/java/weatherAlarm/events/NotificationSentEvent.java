@@ -26,8 +26,8 @@ import java.time.Instant;
  * @author <a href="https://github.com/jscattergood">John Scattergood</a> 1/4/2015
  */
 public class NotificationSentEvent implements IEvent {
-    private WeatherAlarm alarm;
-    private Instant eventTime;
+    private final WeatherAlarm alarm;
+    private final Instant eventTime;
 
     public NotificationSentEvent(WeatherAlarm alarm, Instant eventTime) {
         this.alarm = alarm;
