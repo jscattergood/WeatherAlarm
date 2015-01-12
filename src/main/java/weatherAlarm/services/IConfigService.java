@@ -24,12 +24,12 @@ package weatherAlarm.services;
 public interface IConfigService {
     String CONFIG_USER_NAME = "weatherAlarm.userName";
     String CONFIG_USER_EMAIL = "weatherAlarm.userEmail";
+    String CONFIG_LOCATION = "weatherAlarm.location";
     String CONFIG_TEMPERATURE_PREDICATE = "weatherAlarm.temperaturePredicate";
     String CONFIG_TEMPERATURE_VALUE = "weatherAlarm.temperatureValue";
     String CONFIG_EMAIL_HOST_NAME = "weatherAlarm.emailHostName";
     String CONFIG_EMAIL_AUTH_USER = "weatherAlarm.emailAuthUser";
     String CONFIG_EMAIL_AUTH_PASS = "weatherAlarm.emailAuthPass";
-    String CONFIG_LOCATION = "weatherAlarm.location";
     String CONFIG_WEATHER_SERVICE_QUERY_INTERVAL = "weatherAlarm.weatherServiceQueryInterval";
 
     /**

@@ -22,11 +22,8 @@ import rx.Observable;
 import weatherAlarm.events.*;
 import weatherAlarm.model.WeatherAlarm;
 import weatherAlarm.model.WeatherConditions;
-import weatherAlarm.model.WeatherDataEnum;
-import weatherAlarm.services.IConfigService;
 import weatherAlarm.services.IWeatherAlarmService;
-import weatherAlarm.services.SimpleAlarmService;
-import weatherAlarm.util.PredicateEnum;
+import weatherAlarm.util.TestUtils;
 
 import java.time.Instant;
 
@@ -40,7 +37,7 @@ public class AlarmFilterHandlerTest {
     public void testEvaluateFilterMatchCriteria() {
         final boolean[] received = {false};
         SubjectEventStream stream = new SubjectEventStream();
-        new AlarmFilterHandler(stream, getMockConfigService(), getMockAlarmService());
+        new AlarmFilterHandler(stream, TestUtils.getMockConfigService(), TestUtils.getMockAlarmService());
         WeatherConditions conditions = new WeatherConditions();
         conditions.setTemperature(1);
         stream.observe(FilterMatchEvent.class).forEach(event -> received[0] = true);
@@ -52,7 +49,7 @@ public class AlarmFilterHandlerTest {
     public void testEvaluateFilterNoMatchCriteria() {
         final boolean[] received = {false};
         SubjectEventStream stream = new SubjectEventStream();
-        new AlarmFilterHandler(stream, getMockConfigService(), getMockAlarmService());
+        new AlarmFilterHandler(stream, TestUtils.getMockConfigService(), TestUtils.getMockAlarmService());
         WeatherConditions conditions = new WeatherConditions();
         conditions.setTemperature(-1);
         stream.observe(FilterNoMatchEvent.class).forEach(event -> received[0] = true);
@@ -64,8 +61,8 @@ public class AlarmFilterHandlerTest {
     public void testHandleNotification() {
         final boolean[] received = {false};
         SubjectEventStream stream = new SubjectEventStream();
-        IWeatherAlarmService mockAlarmService = getMockAlarmService();
-        new AlarmFilterHandler(stream, getMockConfigService(), mockAlarmService);
+        IWeatherAlarmService mockAlarmService = TestUtils.getMockAlarmService();
+        new AlarmFilterHandler(stream, TestUtils.getMockConfigService(), mockAlarmService);
         stream.observe(WeatherAlarmUpdatedEvent.class).forEach(event -> received[0] = true);
         WeatherAlarm alarm = mockAlarmService.getAlarms().get(0);
         Instant now = Instant.now();
@@ -79,8 +76,8 @@ public class AlarmFilterHandlerTest {
     public void testHandleFilterNoMatchDueToCriteria() {
         final boolean[] received = {false};
         SubjectEventStream stream = new SubjectEventStream();
-        IWeatherAlarmService mockAlarmService = getMockAlarmService();
-        new AlarmFilterHandler(stream, getMockConfigService(), getMockAlarmService());
+        IWeatherAlarmService mockAlarmService = TestUtils.getMockAlarmService();
+        new AlarmFilterHandler(stream, TestUtils.getMockConfigService(), TestUtils.getMockAlarmService());
         stream.observe(WeatherAlarmUpdatedEvent.class).forEach(event -> received[0] = true);
         WeatherAlarm alarm = mockAlarmService.getAlarms().get(0);
         alarm.setTriggered(true);
@@ -94,8 +91,8 @@ public class AlarmFilterHandlerTest {
     public void testHandleFilterNoMatchDueToNotReady() {
         final boolean[] received = {false};
         SubjectEventStream stream = new SubjectEventStream();
-        IWeatherAlarmService mockAlarmService = getMockAlarmService();
-        new AlarmFilterHandler(stream, getMockConfigService(), getMockAlarmService());
+        IWeatherAlarmService mockAlarmService = TestUtils.getMockAlarmService();
+        new AlarmFilterHandler(stream, TestUtils.getMockConfigService(), TestUtils.getMockAlarmService());
         stream.observe(WeatherAlarmUpdatedEvent.class).forEach(event -> received[0] = true);
         WeatherAlarm alarm = mockAlarmService.getAlarms().get(0);
         alarm.setTriggered(true);
@@ -104,18 +101,5 @@ public class AlarmFilterHandlerTest {
         Assert.assertFalse("No event received", received[0]);
         Assert.assertTrue("Last notification time is null", alarm.getLastNotification() != null);
         Assert.assertTrue("Alarm is not triggered", alarm.isTriggered());
-    }
-
-    public IConfigService getMockConfigService() {
-        return config -> null;
-    }
-
-    public IWeatherAlarmService getMockAlarmService() {
-        WeatherAlarm matchingAlarm = new WeatherAlarm("joe", "joe@xyz.com");
-        WeatherAlarm.ValuePredicate<Integer> valuePredicate = new WeatherAlarm.ValuePredicate<>(PredicateEnum.GT, 0);
-        matchingAlarm.setCriteria(WeatherDataEnum.TEMPERATURE, valuePredicate);
-        SimpleAlarmService alarmService = new SimpleAlarmService();
-        alarmService.addAlarm(matchingAlarm);
-        return alarmService;
     }
 }
