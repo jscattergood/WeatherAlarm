@@ -21,6 +21,7 @@ import netflix.karyon.KaryonBootstrapSuite;
 import netflix.karyon.servo.KaryonServoModule;
 import netflix.karyon.transport.http.health.HealthCheckEndpoint;
 import weatherAlarm.endpoints.HealthCheck;
+import weatherAlarm.endpoints.WeatherAlarmEndpoint;
 import weatherAlarm.handlers.HttpRequestHandler;
 
 /**
@@ -32,12 +33,16 @@ public class Bootstrap {
 
     public static void main(String[] args) {
         HealthCheck healthCheckHandler = new HealthCheck();
+        WeatherAlarmEndpoint alarmEndpoint = new WeatherAlarmEndpoint();
+        HttpRequestHandler requestHandler = new HttpRequestHandler()
+                .addUriHandler("/health", new HealthCheckEndpoint(healthCheckHandler))
+                .addUriHandler("/weatherAlarm", alarmEndpoint);
 
+        WeatherAlarmModule module = new WeatherAlarmModule(requestHandler.getUriHandlers());
         Karyon.forRequestHandler(8888,
-                new HttpRequestHandler("/health",
-                        new HealthCheckEndpoint(healthCheckHandler)),
+                requestHandler,
                 new KaryonBootstrapSuite(healthCheckHandler),
-                WeatherAlarmModule.asSuite(),
+                module.asSuite(),
                 KaryonServoModule.asSuite())
                 .startAndWaitTillShutdown();
     }

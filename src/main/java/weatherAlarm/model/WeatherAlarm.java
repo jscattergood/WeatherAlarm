@@ -29,8 +29,8 @@ import java.util.Map;
  */
 public class WeatherAlarm {
     private final Map<WeatherDataEnum, ValuePredicate> criteria = new EnumMap<>(WeatherDataEnum.class);
-    private String username;
-    private String emailAddress;
+    private final String username;
+    private final String emailAddress;
     private String location;
     private Instant lastNotification;
     private boolean triggered;
@@ -44,16 +44,8 @@ public class WeatherAlarm {
         return username;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     public String getEmailAddress() {
         return emailAddress;
-    }
-
-    public void setEmailAddress(String emailAddress) {
-        this.emailAddress = emailAddress;
     }
 
     public String getLocation() {
@@ -118,6 +110,14 @@ public class WeatherAlarm {
         public ValuePredicate(PredicateEnum predicate, Comparable<T> value) {
             this.predicate = predicate;
             this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return "ValuePredicate[" +
+                    "predicate=" + predicate +
+                    ", value=" + value +
+                    ']';
         }
 
         public PredicateEnum getPredicate() {

@@ -23,28 +23,45 @@ import io.reactivex.netty.protocol.http.server.HttpServerResponse;
 import io.reactivex.netty.protocol.http.server.RequestHandler;
 import rx.Observable;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * This class handles http requests for service endpoints.
  *
  * @author <a href="https://github.com/jscattergood">John Scattergood</a> 12/28/2014
  */
 public class HttpRequestHandler implements RequestHandler<ByteBuf, ByteBuf> {
+    private Map<String, RequestHandler<ByteBuf, ByteBuf>> uriHandlers = new HashMap<>();
 
-    private final String uri;
-    private final RequestHandler<ByteBuf, ByteBuf> uriHandler;
-
-    public HttpRequestHandler(String uri, RequestHandler<ByteBuf, ByteBuf> requestHandler) {
-        this.uri = uri;
-        this.uriHandler = requestHandler;
+    public HttpRequestHandler addUriHandler(String uri, RequestHandler<ByteBuf, ByteBuf> requestHandler) {
+        this.uriHandlers.put(uri, requestHandler);
+        return this;
     }
 
     @Override
     public Observable<Void> handle(HttpServerRequest<ByteBuf> request, HttpServerResponse<ByteBuf> response) {
-        if (request.getUri().startsWith(uri)) {
-            return uriHandler.handle(request, response);
+        RequestHandler<ByteBuf, ByteBuf> handler = findRequestHandler(request.getUri());
+        if (handler != null) {
+            return handler.handle(request, response);
         } else {
             response.setStatus(HttpResponseStatus.NOT_FOUND);
             return response.close();
         }
+    }
+
+    private RequestHandler<ByteBuf, ByteBuf> findRequestHandler(String uri) {
+        for (String uriKey : uriHandlers.keySet()) {
+            if (uriKey.startsWith(uri)) {
+                return uriHandlers.get(uriKey);
+            }
+        }
+        return null;
+    }
+
+    public List<RequestHandler<ByteBuf, ByteBuf>> getUriHandlers() {
+        return new ArrayList<>(uriHandlers.values());
     }
 }

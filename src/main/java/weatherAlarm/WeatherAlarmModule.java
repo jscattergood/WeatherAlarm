@@ -30,14 +30,23 @@ import weatherAlarm.services.IWeatherAlarmService;
 import weatherAlarm.services.PropertyConfigService;
 import weatherAlarm.services.SimpleAlarmService;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * This class is the Guice module that configures the application.
  *
  * @author <a href="https://github.com/jscattergood">John Scattergood</a> 1/9/2015
  */
 public class WeatherAlarmModule extends AbstractModule {
-    public static LifecycleInjectorBuilderSuite asSuite() {
-        return builder -> builder.withAdditionalModules(new WeatherAlarmModule());
+    private final List<Object> injectees = new ArrayList<>();
+
+    public WeatherAlarmModule(List<?> injectees) {
+        this.injectees.addAll(injectees);
+    }
+
+    public LifecycleInjectorBuilderSuite asSuite() {
+        return builder -> builder.withAdditionalModules(this);
     }
 
     @Override
@@ -48,6 +57,14 @@ public class WeatherAlarmModule extends AbstractModule {
         bind(WeatherQueryHandler.class);
         bind(AlarmFilterHandler.class);
         bind(EmailNotificationHandler.class);
+
+        requestInjections();
+    }
+
+    private void requestInjections() {
+        for (Object injectee : injectees) {
+            requestInjection(injectee);
+        }
     }
 
     @Provides
