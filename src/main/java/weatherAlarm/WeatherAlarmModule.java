@@ -62,9 +62,7 @@ public class WeatherAlarmModule extends AbstractModule {
     }
 
     private void requestInjections() {
-        for (Object injectee : injectees) {
-            requestInjection(injectee);
-        }
+        injectees.forEach(this::requestInjection);
     }
 
     @Provides
