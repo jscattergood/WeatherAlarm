@@ -7,13 +7,15 @@ The implementation depends on Netflix OSS projects: karyon and ribbon, and the Y
 
 This application is currently under development and is not finished...
 
-For testing purposes, JVM args are used to configure the application:
+Configuration is defined via config.properties file found in src/main/resources.
+
+JVM args can also be used for configuration or to override values defined in the config.properties file:
 
 ```
--DweatherAlarm.location=[zip code]
 -DweatherAlarm.weatherServiceQueryInterval=[seconds] 
 -DweatherAlarm.userName=[user's name]
 -DweatherAlarm.userEmail=[user's email address, e.g. user.name@userEmail.com]
+-DweatherAlarm.location=[zip code]
 -DweatherAlarm.temperaturePredicate=[LT,LE,GT,GE,EQ,NE]
 -DweatherAlarm.temperatureValue=[integer value]
 -DweatherAlarm.emailHostName=[smtp server, e.g. smtp.gmail.com]
