@@ -36,10 +36,10 @@ public interface IWeatherAlarmService {
     /**
      * Returns an alarm if present
      *
-     * @param userEmail user's email address
+     * @param name unique alarm name
      * @return matching alarm or {@code null}
      */
-    WeatherAlarm getAlarm(String userEmail);
+    WeatherAlarm getAlarm(String name);
 
     /**
      * Adds an alarm. Implementation should be idempotent.
@@ -52,8 +52,8 @@ public interface IWeatherAlarmService {
     /**
      * Removes an alarm.  Implementation should be idempotent.
      *
-     * @param userEmail user's email address
+     * @param name unique alarm name
      * @return true if the alarm was removed, false if the alarm was not present
      */
-    boolean removeAlarm(String userEmail);
+    boolean removeAlarm(String name);
 }

@@ -29,19 +29,19 @@ import java.util.Map;
  */
 public class WeatherAlarm {
     private final Map<WeatherDataEnum, ValuePredicate> criteria = new EnumMap<>(WeatherDataEnum.class);
-    private final String username;
+    private final String name;
     private final String emailAddress;
     private String location;
     private Instant lastNotification;
     private boolean triggered;
 
-    public WeatherAlarm(String username, String emailAddress) {
-        this.username = username;
+    public WeatherAlarm(String name, String emailAddress) {
+        this.name = name;
         this.emailAddress = emailAddress;
     }
 
-    public String getUsername() {
-        return username;
+    public String getName() {
+        return name;
     }
 
     public String getEmailAddress() {
@@ -95,7 +95,7 @@ public class WeatherAlarm {
     @Override
     public String toString() {
         return "WeatherAlarm[" +
-                "username='" + username + '\'' +
+                "name='" + name + '\'' +
                 ", emailAddress='" + emailAddress + '\'' +
                 ", criteria=" + criteria +
                 ", lastNotification=" + lastNotification +

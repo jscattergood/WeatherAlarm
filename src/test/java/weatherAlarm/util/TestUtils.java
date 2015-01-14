@@ -34,7 +34,7 @@ public class TestUtils {
     }
 
     public static IWeatherAlarmService getMockAlarmService() {
-        WeatherAlarm matchingAlarm = new WeatherAlarm("joe", "joe@xyz.com");
+        WeatherAlarm matchingAlarm = new WeatherAlarm("zero degrees", "joe@xyz.com");
         WeatherAlarm.ValuePredicate<Integer> valuePredicate = new WeatherAlarm.ValuePredicate<>(PredicateEnum.GT, 0);
         matchingAlarm.setCriteria(WeatherDataEnum.TEMPERATURE, valuePredicate);
         matchingAlarm.setLocation("99999");

@@ -39,17 +39,17 @@ public class SimpleAlarmService implements IWeatherAlarmService {
     }
 
     @Override
-    public WeatherAlarm getAlarm(String userEmail) {
-        return weatherAlarmMap.get(userEmail);
+    public WeatherAlarm getAlarm(String name) {
+        return weatherAlarmMap.get(name);
     }
 
     @Override
     public boolean addAlarm(WeatherAlarm alarm) {
-        return weatherAlarmMap.putIfAbsent(alarm.getEmailAddress(), alarm) == null;
+        return weatherAlarmMap.putIfAbsent(alarm.getName(), alarm) == null;
     }
 
     @Override
-    public boolean removeAlarm(String userEmail) {
-        return weatherAlarmMap.remove(userEmail) != null;
+    public boolean removeAlarm(String name) {
+        return weatherAlarmMap.remove(name) != null;
     }
 }

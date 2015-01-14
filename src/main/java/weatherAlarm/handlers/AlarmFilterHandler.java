@@ -71,14 +71,14 @@ public class AlarmFilterHandler extends EventHandler {
     }
 
     private void addDefaultAlarm() {
-        final String userName = configService.getConfigValue(IConfigService.CONFIG_USER_NAME);
-        if (userName == null) {
-            logger.debug("No user defined. Not adding alarm...");
+        final String name = configService.getConfigValue(IConfigService.CONFIG_NAME);
+        if (name == null) {
+            logger.debug("No name defined. Not adding alarm...");
             return;
         }
-        final String userEmail = configService.getConfigValue(IConfigService.CONFIG_USER_EMAIL);
-        if (userEmail == null) {
-            logger.debug("No user email defined. Not adding alarm...");
+        final String emailAddress = configService.getConfigValue(IConfigService.CONFIG_EMAIL);
+        if (emailAddress == null) {
+            logger.debug("No email defined. Not adding alarm...");
             return;
         }
         final String location = configService.getConfigValue(IConfigService.CONFIG_LOCATION);
@@ -101,7 +101,7 @@ public class AlarmFilterHandler extends EventHandler {
             return;
         }
 
-        WeatherAlarm alarm = new WeatherAlarm(userName, userEmail);
+        WeatherAlarm alarm = new WeatherAlarm(name, emailAddress);
         alarm.setLocation(location);
         WeatherAlarm.ValuePredicate<Integer> predicate = new WeatherAlarm.ValuePredicate<>(predicateEnum, value);
         alarm.setCriteria(WeatherDataEnum.TEMPERATURE, predicate);

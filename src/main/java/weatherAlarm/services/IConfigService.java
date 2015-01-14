@@ -22,8 +22,8 @@ package weatherAlarm.services;
  * @author <a href="https://github.com/jscattergood">John Scattergood</a> 1/9/2015
  */
 public interface IConfigService {
-    String CONFIG_USER_NAME = "weatherAlarm.userName";
-    String CONFIG_USER_EMAIL = "weatherAlarm.userEmail";
+    String CONFIG_NAME = "weatherAlarm.name";
+    String CONFIG_EMAIL = "weatherAlarm.email";
     String CONFIG_LOCATION = "weatherAlarm.location";
     String CONFIG_TEMPERATURE_PREDICATE = "weatherAlarm.temperaturePredicate";
     String CONFIG_TEMPERATURE_VALUE = "weatherAlarm.temperatureValue";
