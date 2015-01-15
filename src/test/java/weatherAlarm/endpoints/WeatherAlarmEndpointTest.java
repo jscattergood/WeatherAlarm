@@ -44,7 +44,7 @@ public class WeatherAlarmEndpointTest {
         HttpServerResponse<ByteBuf> mockHttpResponse = createMockHttpResponse(written);
         alarmEndpoint.handle(mockServerRequest, mockHttpResponse);
         byte[] expected = new ObjectMapper().writeValueAsBytes(alarmService.getAlarms());
-        Assert.assertTrue("Unexpected value in written value ", Arrays.equals(expected, written.getValue()));
+        Assert.assertTrue("Unexpected value written", Arrays.equals(expected, written.getValue()));
     }
 
     @SuppressWarnings("unchecked")
