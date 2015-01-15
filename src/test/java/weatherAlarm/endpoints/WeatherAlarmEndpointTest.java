@@ -20,21 +20,22 @@ import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.http.HttpMethod;
 import io.reactivex.netty.protocol.http.server.HttpServerRequest;
 import io.reactivex.netty.protocol.http.server.HttpServerResponse;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.easymock.Capture;
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Test;
 import rx.Observable;
-import weatherAlarm.model.WeatherAlarm;
 import weatherAlarm.services.IWeatherAlarmService;
 import weatherAlarm.util.TestUtils;
+
+import java.util.Arrays;
 
 public class WeatherAlarmEndpointTest {
 
     @Test
-    public void testHandle() throws Exception {
+    public void testHandleRequestForAlarms() throws Exception {
         IWeatherAlarmService alarmService = TestUtils.getMockAlarmService();
-        WeatherAlarm alarm = alarmService.getAlarms().get(0);
         WeatherAlarmEndpoint alarmEndpoint = new WeatherAlarmEndpoint();
         alarmEndpoint.setAlarmService(alarmService);
 
@@ -42,7 +43,8 @@ public class WeatherAlarmEndpointTest {
         HttpServerRequest<ByteBuf> mockServerRequest = createMockHttpServerRequest(HttpMethod.GET, "/weatherAlarm");
         HttpServerResponse<ByteBuf> mockHttpResponse = createMockHttpResponse(written);
         alarmEndpoint.handle(mockServerRequest, mockHttpResponse);
-        Assert.assertTrue("Expected not null value", written.getValue().length > 0);
+        byte[] expected = new ObjectMapper().writeValueAsBytes(alarmService.getAlarms());
+        Assert.assertTrue("Unexpected value in written value ", Arrays.equals(expected, written.getValue()));
     }
 
     @SuppressWarnings("unchecked")
