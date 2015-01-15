@@ -39,7 +39,7 @@ import java.io.IOException;
 public class WeatherAlarmEndpoint implements RequestHandler<ByteBuf, ByteBuf> {
     private static final Logger logger = LoggerFactory.getLogger(WeatherAlarmEndpoint.class);
     @Inject
-    IWeatherAlarmService alarmService;
+    private IWeatherAlarmService alarmService;
 
     @Override
     public Observable<Void> handle(HttpServerRequest<ByteBuf> request, HttpServerResponse<ByteBuf> response) {
@@ -59,5 +59,9 @@ public class WeatherAlarmEndpoint implements RequestHandler<ByteBuf, ByteBuf> {
                 response.setStatus(HttpResponseStatus.INTERNAL_SERVER_ERROR);
             }
         }
+    }
+
+    public void setAlarmService(IWeatherAlarmService alarmService) {
+        this.alarmService = alarmService;
     }
 }
