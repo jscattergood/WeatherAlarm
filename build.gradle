@@ -18,9 +18,11 @@
 
 
 
-apply plugin: 'java'
 
-sourceCompatibility = 1.8
+
+apply plugin: 'java'
+apply plugin: 'application'
+
 version = '1.0'
 
 repositories {
@@ -41,3 +43,11 @@ dependencies {
     testCompile group: 'org.powermock', name: 'powermock-module-junit4', version: '1.6.1'
     testCompile group: 'org.powermock', name: 'powermock-api-easymock', version: '1.6.1'
 }
+
+applicationDistribution.from('src/main/resources') {
+    include '**/*.properties'
+    include '**/*.xml'
+    into "conf"
+}
+
+mainClassName = 'weatherAlarm.Bootstrap'
