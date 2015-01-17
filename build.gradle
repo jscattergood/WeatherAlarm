@@ -16,14 +16,6 @@
 
 
 
-
-
-
-
-
-
-
-
 apply plugin: 'java'
 apply plugin: 'application'
 
@@ -51,16 +43,16 @@ dependencies {
 }
 
 startScripts {
-    classpath += files('src/main/resources')
+    classpath += files('src/main/conf')
     doLast {
         def windowsScriptFile = file getWindowsScript()
         def unixScriptFile = file getUnixScript()
-        windowsScriptFile.text = windowsScriptFile.text.replace('%APP_HOME%\\lib\\resources', '%APP_HOME%\\conf')
-        unixScriptFile.text = unixScriptFile.text.replace('$APP_HOME/lib/resources', '$APP_HOME/conf')
+        windowsScriptFile.text = windowsScriptFile.text.replace('%APP_HOME%\\lib\\conf', '%APP_HOME%\\conf')
+        unixScriptFile.text = unixScriptFile.text.replace('$APP_HOME/lib/conf', '$APP_HOME/conf')
     }
 }
 
-applicationDistribution.from('src/main/resources') {
+applicationDistribution.from('src/main/conf') {
     include '**/*.properties'
     into "conf"
 }
