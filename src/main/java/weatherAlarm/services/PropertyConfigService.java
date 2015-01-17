@@ -20,6 +20,8 @@ import com.google.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -40,10 +42,21 @@ public class PropertyConfigService implements IConfigService {
         // load a properties file
         ClassLoader classLoader = this.getClass().getClassLoader();
         try (InputStream inputStream = classLoader.getResourceAsStream(CONFIG_PROPERTIES)) {
-            properties.load(inputStream);
-
+            if (inputStream != null) {
+                properties.load(inputStream);
+            }
         } catch (IOException e) {
-            logger.error("Could not load properties", e);
+            logger.error("Could not load properties from classpath", e);
+        }
+
+        String pathToConfig = System.getProperty(CONFIG_PROPERTIES);
+        if (pathToConfig != null && !pathToConfig.isEmpty()) {
+            File configFile = new File(pathToConfig);
+            try (InputStream inputStream = new FileInputStream(configFile)) {
+                properties.load(inputStream);
+            } catch (IOException e) {
+                logger.error("Could not load properties from file " + pathToConfig, e);
+            }
         }
 
         //Override properties with JVM args
