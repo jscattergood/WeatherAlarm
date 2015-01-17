@@ -22,6 +22,8 @@
 
 
 
+
+
 apply plugin: 'java'
 apply plugin: 'application'
 
@@ -48,9 +50,18 @@ dependencies {
     testCompile group: 'org.powermock', name: 'powermock-api-easymock', version: '1.6.1'
 }
 
+startScripts {
+    classpath += files('src/main/resources')
+    doLast {
+        def windowsScriptFile = file getWindowsScript()
+        def unixScriptFile = file getUnixScript()
+        windowsScriptFile.text = windowsScriptFile.text.replace('%APP_HOME%\\lib\\resources', '%APP_HOME%\\conf')
+        unixScriptFile.text = unixScriptFile.text.replace('$APP_HOME/lib/resources', '$APP_HOME/conf')
+    }
+}
+
 applicationDistribution.from('src/main/resources') {
     include '**/*.properties'
-    include '**/*.xml'
     into "conf"
 }
 
