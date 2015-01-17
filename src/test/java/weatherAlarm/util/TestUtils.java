@@ -34,13 +34,23 @@ public class TestUtils {
     }
 
     public static IWeatherAlarmService getMockAlarmService() {
-        WeatherAlarm matchingAlarm = new WeatherAlarm("zero degrees", "joe@xyz.com");
-        WeatherAlarm.ValuePredicate<Integer> valuePredicate = new WeatherAlarm.ValuePredicate<>(PredicateEnum.GT, 0);
-        matchingAlarm.setCriteria(WeatherDataEnum.TEMPERATURE, valuePredicate);
-        matchingAlarm.setLocation("99999");
+        WeatherAlarm alarm = createWeatherAlarm();
         IWeatherAlarmService alarmService = new SimpleAlarmService();
-        alarmService.addAlarm(matchingAlarm);
+        alarmService.addAlarm(alarm);
         return alarmService;
+    }
+
+    public static IWeatherAlarmService getEmptyAlarmService() {
+        return new SimpleAlarmService();
+    }
+
+    public static WeatherAlarm createWeatherAlarm() {
+        WeatherAlarm alarm = new WeatherAlarm("zero degrees");
+        alarm.setEmailAddress("joe@xyz.com");
+        WeatherAlarm.ValuePredicate<Integer> valuePredicate = new WeatherAlarm.ValuePredicate<>(PredicateEnum.GT, 0);
+        alarm.setCriteria(WeatherDataEnum.TEMPERATURE, valuePredicate);
+        alarm.setLocation("99999");
+        return alarm;
     }
 
     public static IConfigService getMockConfigService() {

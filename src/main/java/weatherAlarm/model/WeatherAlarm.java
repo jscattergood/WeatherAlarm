@@ -16,6 +16,8 @@
 
 package weatherAlarm.model;
 
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonProperty;
 import weatherAlarm.util.PredicateEnum;
 
 import java.time.Instant;
@@ -30,14 +32,14 @@ import java.util.Map;
 public class WeatherAlarm {
     private final Map<WeatherDataEnum, ValuePredicate> criteria = new EnumMap<>(WeatherDataEnum.class);
     private final String name;
-    private final String emailAddress;
+    private String emailAddress;
     private String location;
     private Instant lastNotification;
     private boolean triggered;
 
-    public WeatherAlarm(String name, String emailAddress) {
+    @JsonCreator
+    public WeatherAlarm(@JsonProperty("name") String name) {
         this.name = name;
-        this.emailAddress = emailAddress;
     }
 
     public String getName() {
@@ -46,6 +48,10 @@ public class WeatherAlarm {
 
     public String getEmailAddress() {
         return emailAddress;
+    }
+
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
     }
 
     public String getLocation() {

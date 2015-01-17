@@ -54,7 +54,7 @@ public class HttpRequestHandler implements RequestHandler<ByteBuf, ByteBuf> {
 
     private RequestHandler<ByteBuf, ByteBuf> findRequestHandler(String uri) {
         for (String uriKey : uriHandlers.keySet()) {
-            if (uriKey.startsWith(uri)) {
+            if (uri.startsWith(uriKey)) {
                 return uriHandlers.get(uriKey);
             }
         }

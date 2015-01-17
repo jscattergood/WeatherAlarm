@@ -101,7 +101,8 @@ public class AlarmFilterHandler extends EventHandler {
             return;
         }
 
-        WeatherAlarm alarm = new WeatherAlarm(name, emailAddress);
+        WeatherAlarm alarm = new WeatherAlarm(name);
+        alarm.setEmailAddress(emailAddress);
         alarm.setLocation(location);
         WeatherAlarm.ValuePredicate<Integer> predicate = new WeatherAlarm.ValuePredicate<>(predicateEnum, value);
         alarm.setCriteria(WeatherDataEnum.TEMPERATURE, predicate);

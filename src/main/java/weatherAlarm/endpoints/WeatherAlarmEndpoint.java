@@ -27,9 +27,12 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rx.Observable;
+import weatherAlarm.model.WeatherAlarm;
 import weatherAlarm.services.IWeatherAlarmService;
 
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.nio.charset.Charset;
 
 /**
  * This class handles requests for weather alarm resources
@@ -43,21 +46,80 @@ public class WeatherAlarmEndpoint implements RequestHandler<ByteBuf, ByteBuf> {
 
     @Override
     public Observable<Void> handle(HttpServerRequest<ByteBuf> request, HttpServerResponse<ByteBuf> response) {
+        if (alarmService == null) {
+            response.setStatus(HttpResponseStatus.SERVICE_UNAVAILABLE);
+            return response.close();
+        }
         if (HttpMethod.GET.equals(request.getHttpMethod())) {
-            handleGet(response);
+            handleGet(response, request.getUri());
+        } else if (HttpMethod.PUT.equals(request.getHttpMethod())) {
+            handlePut(response, request.getContent());
+        } else if (HttpMethod.DELETE.equals(request.getHttpMethod())) {
+            handleDelete(response, request.getUri());
+        } else {
+            response.setStatus(HttpResponseStatus.NOT_IMPLEMENTED);
         }
         return response.close();
     }
 
-    private void handleGet(HttpServerResponse<ByteBuf> response) {
-        if (alarmService != null) {
-            ObjectMapper mapper = new ObjectMapper();
-            try {
+    private void handleGet(HttpServerResponse<ByteBuf> response, String uri) {
+        String[] parts = uri.substring(1).split("/");
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            if (parts.length == 1) {
                 response.writeBytes(mapper.writeValueAsBytes(alarmService.getAlarms()));
+            } else if (parts.length == 2) {
+                String alarmName = URLDecoder.decode(parts[1], "UTF-8");
+                WeatherAlarm alarm = alarmService.getAlarm(alarmName);
+                if (alarm != null) {
+                    response.writeBytes(mapper.writeValueAsBytes(alarm));
+                } else {
+                    logger.debug("No alarm found with name " + alarmName);
+                    response.setStatus(HttpResponseStatus.NOT_FOUND);
+                }
+            } else {
+                logger.error("Unsupported resource request " + uri);
+                response.setStatus(HttpResponseStatus.NOT_FOUND);
+            }
+        } catch (IOException e) {
+            logger.error("Failed to write JSON to response", e);
+            response.setStatus(HttpResponseStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    private void handlePut(HttpServerResponse<ByteBuf> response, Observable<ByteBuf> content) {
+        ObjectMapper mapper = new ObjectMapper();
+        content.forEach(byteBuf -> {
+            try {
+                WeatherAlarm alarm = mapper.readValue(byteBuf.toString(Charset.defaultCharset()), WeatherAlarm.class);
+                alarmService.addAlarm(alarm);
             } catch (IOException e) {
-                logger.error("Failed to write JSON to response", e);
+                logger.error("Failed to read JSON from request", e);
                 response.setStatus(HttpResponseStatus.INTERNAL_SERVER_ERROR);
             }
+        });
+    }
+
+    private void handleDelete(HttpServerResponse<ByteBuf> response, String uri) {
+        String[] parts = uri.substring(1).split("/");
+        try {
+            if (parts.length == 1) {
+                //Not allowed to delete all alarms
+                response.setStatus(HttpResponseStatus.UNAUTHORIZED);
+            } else if (parts.length == 2) {
+                String alarmName = URLDecoder.decode(parts[1], "UTF-8");
+                boolean removed = alarmService.removeAlarm(alarmName);
+                if (!removed) {
+                    logger.debug("No alarm found with name " + alarmName);
+                    response.setStatus(HttpResponseStatus.NOT_FOUND);
+                }
+            } else {
+                logger.error("Unsupported resource request " + uri);
+                response.setStatus(HttpResponseStatus.NOT_FOUND);
+            }
+        } catch (IOException e) {
+            logger.error("Failed to write JSON to response", e);
+            response.setStatus(HttpResponseStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
