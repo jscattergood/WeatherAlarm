@@ -20,6 +20,8 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.netflix.governator.guice.LifecycleInjectorBuilderSuite;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import weatherAlarm.events.IEventStream;
 import weatherAlarm.events.SubjectEventStream;
 import weatherAlarm.handlers.AlarmFilterHandler;
@@ -39,6 +41,8 @@ import java.util.List;
  * @author <a href="https://github.com/jscattergood">John Scattergood</a> 1/9/2015
  */
 public class WeatherAlarmModule extends AbstractModule {
+    private static final Logger logger = LoggerFactory.getLogger(WeatherAlarmModule.class);
+
     private final List<Object> injectees = new ArrayList<>();
 
     public WeatherAlarmModule(List<?> injectees) {
@@ -69,7 +73,7 @@ public class WeatherAlarmModule extends AbstractModule {
     @Singleton
     SubjectEventStream providesEventStream() {
         SubjectEventStream events = new SubjectEventStream();
-        events.observe().doOnNext(System.out::println).subscribe();
+        events.observe().doOnNext(event -> logger.info(event.toString())).subscribe();
         return events;
     }
 }
