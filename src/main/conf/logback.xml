@@ -24,7 +24,7 @@
         </encoder>
     </appender>
     <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <File>../logs/weatherAlarm.log</File>
+        <File>logs/weatherAlarm.log</File>
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n</pattern>
         </encoder>
