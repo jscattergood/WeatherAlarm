@@ -13,11 +13,7 @@ JVM args can also be used for configuration or to override values defined in the
 
 ```
 -DweatherAlarm.weatherServiceQueryInterval=[seconds] 
--DweatherAlarm.name=[unique alarm name]
--DweatherAlarm.email=[email address, e.g. user.name@userEmail.com]
--DweatherAlarm.location=[zip code]
--DweatherAlarm.temperaturePredicate=[LT,LE,GT,GE,EQ,NE]
--DweatherAlarm.temperatureValue=[integer value]
+-DweatherAlarm.initialAlarms=[a json file containing initial alarm entries in a list, e.g. /path/to/json/init.json]
 -DweatherAlarm.emailHostName=[smtp server, e.g. smtp.gmail.com]
 -DweatherAlarm.emailAuthUser=[service's email account, e.g. service.email@serviceEmail.com]
 -DweatherAlarm.emailAuthPass=[service email account password]
