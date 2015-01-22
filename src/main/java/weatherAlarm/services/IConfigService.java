@@ -22,14 +22,10 @@ package weatherAlarm.services;
  * @author <a href="https://github.com/jscattergood">John Scattergood</a> 1/9/2015
  */
 public interface IConfigService {
-    String CONFIG_NAME = "weatherAlarm.name";
-    String CONFIG_EMAIL = "weatherAlarm.email";
-    String CONFIG_LOCATION = "weatherAlarm.location";
-    String CONFIG_TEMPERATURE_PREDICATE = "weatherAlarm.temperaturePredicate";
-    String CONFIG_TEMPERATURE_VALUE = "weatherAlarm.temperatureValue";
     String CONFIG_EMAIL_HOST_NAME = "weatherAlarm.emailHostName";
     String CONFIG_EMAIL_AUTH_USER = "weatherAlarm.emailAuthUser";
     String CONFIG_EMAIL_AUTH_PASS = "weatherAlarm.emailAuthPass";
+    String CONFIG_INITIAL_ALARMS = "weatherAlarm.initialAlarms";
     String CONFIG_WEATHER_SERVICE_QUERY_INTERVAL = "weatherAlarm.weatherServiceQueryInterval";
 
     /**

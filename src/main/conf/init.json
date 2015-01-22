@@ -1,0 +1,14 @@
+[
+  {
+    "name": "Less Than Zero",
+    "criteria": {
+      "TEMPERATURE": {
+        "predicate": "LT",
+        "value": 0,
+        "type" : "integer"
+      }
+    },
+    "emailAddress": "your.name@yourEmail.com",
+    "location": "99999"
+  }
+]

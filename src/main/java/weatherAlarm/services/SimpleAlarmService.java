@@ -16,9 +16,16 @@
 
 package weatherAlarm.services;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import weatherAlarm.model.WeatherAlarm;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +38,32 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Singleton
 public class SimpleAlarmService implements IWeatherAlarmService {
+    private static final Logger logger = LoggerFactory.getLogger(SimpleAlarmService.class);
     private final Map<String, WeatherAlarm> weatherAlarmMap = new ConcurrentHashMap<>();
+    private final IConfigService configService;
+
+    @Inject
+    public SimpleAlarmService(IConfigService configService) {
+        this.configService = configService;
+        addDefaultAlarms();
+    }
+
+    private void addDefaultAlarms() {
+        final String alarmServiceInit = configService.getConfigValue(IConfigService.CONFIG_INITIAL_ALARMS);
+        if (alarmServiceInit == null) {
+            logger.debug("No initialization file supplied. Not adding alarm(s)...");
+            return;
+        }
+        File configFile = new File(alarmServiceInit);
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            @SuppressWarnings("unchecked")
+            List<WeatherAlarm> alarms = mapper.readValue(configFile, new TypeReference<List<WeatherAlarm>>(){});
+            alarms.stream().forEach(this::addAlarm);
+        } catch (IOException e) {
+            logger.error("Could not load alarms from file " + alarmServiceInit, e);
+        }
+    }
 
     @Override
     public List<WeatherAlarm> getAlarms() {

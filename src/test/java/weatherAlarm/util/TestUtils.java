@@ -17,6 +17,7 @@
 package weatherAlarm.util;
 
 import org.easymock.EasyMock;
+import weatherAlarm.model.IntegerPredicate;
 import weatherAlarm.model.WeatherAlarm;
 import weatherAlarm.model.WeatherDataEnum;
 import weatherAlarm.services.IConfigService;
@@ -35,20 +36,20 @@ public class TestUtils {
 
     public static IWeatherAlarmService getMockAlarmService() {
         WeatherAlarm alarm = createWeatherAlarm();
-        IWeatherAlarmService alarmService = new SimpleAlarmService();
+        IWeatherAlarmService alarmService = new SimpleAlarmService(getMockConfigService());
         alarmService.addAlarm(alarm);
         return alarmService;
     }
 
     public static IWeatherAlarmService getEmptyAlarmService() {
-        return new SimpleAlarmService();
+        return new SimpleAlarmService(getMockConfigService());
     }
 
     public static WeatherAlarm createWeatherAlarm() {
         WeatherAlarm alarm = new WeatherAlarm("zero degrees");
         alarm.setEmailAddress("joe@xyz.com");
-        WeatherAlarm.ValuePredicate<Integer> valuePredicate = new WeatherAlarm.ValuePredicate<>(PredicateEnum.GT, 0);
-        alarm.setCriteria(WeatherDataEnum.TEMPERATURE, valuePredicate);
+        IntegerPredicate valuePredicate = new IntegerPredicate(PredicateEnum.GT, 0);
+        alarm.setCriteriaFor(WeatherDataEnum.TEMPERATURE, valuePredicate);
         alarm.setLocation("99999");
         return alarm;
     }

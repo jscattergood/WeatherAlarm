@@ -107,7 +107,7 @@ public class EmailNotificationHandler extends AbstractNotificationHandler {
 
                 message.addRecipient(Message.RecipientType.TO, new InternetAddress(alarm.getEmailAddress()));
                 message.setSubject("Weather Alarm!");
-                message.setText("Criteria - " + alarm.getCriteria(WeatherDataEnum.TEMPERATURE).getValue() + "\n" +
+                message.setText("Criteria - " + alarm.getCriteriaFor(WeatherDataEnum.TEMPERATURE).getValue() + "\n" +
                         "Current Conditions - " + event.getConditions().getTemperature());
 
                 Transport transport = session.getTransport(TRANSPORT_PROTOCOL);

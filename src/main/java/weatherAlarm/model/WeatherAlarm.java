@@ -18,9 +18,9 @@ package weatherAlarm.model;
 
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
-import weatherAlarm.util.PredicateEnum;
 
 import java.time.Instant;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -62,11 +62,19 @@ public class WeatherAlarm {
         this.location = location;
     }
 
-    public ValuePredicate<?> getCriteria(WeatherDataEnum weatherDataEnum) {
+    public Map<WeatherDataEnum, ValuePredicate> getCriteria() {
+        return Collections.unmodifiableMap(criteria);
+    }
+
+    public void setCriteria(Map<WeatherDataEnum, ValuePredicate> map) {
+        criteria.putAll(map);
+    }
+
+    public ValuePredicate<?> getCriteriaFor(WeatherDataEnum weatherDataEnum) {
         return criteria.get(weatherDataEnum);
     }
 
-    public void setCriteria(WeatherDataEnum weatherDataEnum, ValuePredicate<?> valuePredicate) {
+    public void setCriteriaFor(WeatherDataEnum weatherDataEnum, ValuePredicate<?> valuePredicate) {
         criteria.put(weatherDataEnum, valuePredicate);
     }
 
@@ -88,7 +96,7 @@ public class WeatherAlarm {
     }
 
     public boolean matchesCriteria(WeatherDataEnum weatherDataEnum, Comparable value) {
-        ValuePredicate valuePredicate = getCriteria(weatherDataEnum);
+        ValuePredicate valuePredicate = getCriteriaFor(weatherDataEnum);
         //noinspection unchecked
         return valuePredicate != null &&
                 valuePredicate.satisfies(value);
@@ -109,49 +117,4 @@ public class WeatherAlarm {
                 ']';
     }
 
-    public static class ValuePredicate<T> {
-        private final PredicateEnum predicate;
-        private final Comparable<T> value;
-
-        public ValuePredicate(PredicateEnum predicate, Comparable<T> value) {
-            this.predicate = predicate;
-            this.value = value;
-        }
-
-        @Override
-        public String toString() {
-            return "ValuePredicate[" +
-                    "predicate=" + predicate +
-                    ", value=" + value +
-                    ']';
-        }
-
-        public PredicateEnum getPredicate() {
-            return predicate;
-        }
-
-        public Comparable<T> getValue() {
-            return value;
-        }
-
-        public boolean satisfies(T value) {
-            int comparison = this.value.compareTo(value);
-            switch (predicate) {
-                case EQ:
-                    return this.value.equals(value);
-                case NE:
-                    return !this.value.equals(value);
-                case GT:
-                    return comparison == -1;
-                case GE:
-                    return comparison == -1 || comparison == 0;
-                case LT:
-                    return comparison == 1;
-                case LE:
-                    return comparison == 1 || comparison == 0;
-                default:
-                    return false;
-            }
-        }
-    }
 }
