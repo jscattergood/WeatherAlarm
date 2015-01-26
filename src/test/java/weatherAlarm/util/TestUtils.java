@@ -16,7 +16,14 @@
 
 package weatherAlarm.util;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.handler.codec.http.HttpMethod;
+import io.netty.handler.codec.http.HttpResponseStatus;
+import io.reactivex.netty.protocol.http.server.HttpServerRequest;
+import io.reactivex.netty.protocol.http.server.HttpServerResponse;
+import org.easymock.Capture;
 import org.easymock.EasyMock;
+import rx.Observable;
 import weatherAlarm.model.IntegerPredicate;
 import weatherAlarm.model.WeatherAlarm;
 import weatherAlarm.model.WeatherDataEnum;
@@ -80,5 +87,28 @@ public class TestUtils {
                 "\"date\":\"Sun, 11 Jan 2015 4:52 pm PST\"," +
                 "\"temp\":\"56\"," +
                 "\"text\":\"Fair\"}}}}}}";
+    }
+
+    @SuppressWarnings("unchecked")
+    public static HttpServerRequest<ByteBuf> createMockHttpServerRequest(HttpMethod method,
+                                                                         String uri,
+                                                                         Observable<ByteBuf> content) {
+        HttpServerRequest<ByteBuf> request = EasyMock.createMock(HttpServerRequest.class);
+        EasyMock.expect(request.getUri()).andReturn(uri).anyTimes();
+        EasyMock.expect(request.getHttpMethod()).andReturn(method).anyTimes();
+        EasyMock.expect(request.getContent()).andReturn(content).anyTimes();
+        EasyMock.replay(request);
+        return request;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static HttpServerResponse<ByteBuf> createMockHttpResponse(Capture<HttpResponseStatus> captureResponseStatus,
+                                                                     Capture<byte[]> captureWrittenBytes) {
+        HttpServerResponse<ByteBuf> mockResponse = EasyMock.createMock(HttpServerResponse.class);
+        mockResponse.writeBytes(EasyMock.capture(captureWrittenBytes));
+        mockResponse.setStatus(EasyMock.capture(captureResponseStatus));
+        EasyMock.expect(mockResponse.close()).andReturn(Observable.empty()).anyTimes();
+        EasyMock.replay(mockResponse);
+        return mockResponse;
     }
 }

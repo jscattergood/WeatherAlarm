@@ -35,7 +35,7 @@ public class Bootstrap {
         HealthCheck healthCheckHandler = new HealthCheck();
         WeatherAlarmEndpoint alarmEndpoint = new WeatherAlarmEndpoint();
         HttpRequestHandler requestHandler = new HttpRequestHandler()
-                .addUriHandler("/health", new HealthCheckEndpoint(healthCheckHandler))
+                .addUriHandler("/healthcheck", new HealthCheckEndpoint(healthCheckHandler))
                 .addUriHandler("/weatherAlarm", alarmEndpoint);
 
         WeatherAlarmModule module = new WeatherAlarmModule(requestHandler.getUriHandlers());

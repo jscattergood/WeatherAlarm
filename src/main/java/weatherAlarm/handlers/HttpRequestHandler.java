@@ -34,6 +34,7 @@ import java.util.Map;
  * @author <a href="https://github.com/jscattergood">John Scattergood</a> 12/28/2014
  */
 public class HttpRequestHandler implements RequestHandler<ByteBuf, ByteBuf> {
+    private static final String PATH_DELIM = "/";
     private Map<String, RequestHandler<ByteBuf, ByteBuf>> uriHandlers = new HashMap<>();
 
     public HttpRequestHandler addUriHandler(String uri, RequestHandler<ByteBuf, ByteBuf> requestHandler) {
@@ -54,7 +55,7 @@ public class HttpRequestHandler implements RequestHandler<ByteBuf, ByteBuf> {
 
     private RequestHandler<ByteBuf, ByteBuf> findRequestHandler(String uri) {
         for (String uriKey : uriHandlers.keySet()) {
-            if (uri.startsWith(uriKey)) {
+            if (uri.equals(uriKey) || uri.startsWith(uriKey + PATH_DELIM)) {
                 return uriHandlers.get(uriKey);
             }
         }

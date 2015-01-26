@@ -30,10 +30,11 @@ import org.junit.Test;
 import rx.Observable;
 import weatherAlarm.model.WeatherAlarm;
 import weatherAlarm.services.IWeatherAlarmService;
-import weatherAlarm.util.TestUtils;
 
 import java.net.URLEncoder;
 import java.util.Arrays;
+
+import static weatherAlarm.util.TestUtils.*;
 
 public class WeatherAlarmEndpointTest {
 
@@ -41,7 +42,7 @@ public class WeatherAlarmEndpointTest {
 
     @Test
     public void testNotImplemented() {
-        IWeatherAlarmService alarmService = TestUtils.getMockAlarmService();
+        IWeatherAlarmService alarmService = getMockAlarmService();
         WeatherAlarmEndpoint alarmEndpoint = new WeatherAlarmEndpoint();
         alarmEndpoint.setAlarmService(alarmService);
 
@@ -56,7 +57,7 @@ public class WeatherAlarmEndpointTest {
 
     @Test
     public void testHandleRequestForAlarms() throws Exception {
-        IWeatherAlarmService alarmService = TestUtils.getMockAlarmService();
+        IWeatherAlarmService alarmService = getMockAlarmService();
         WeatherAlarmEndpoint alarmEndpoint = new WeatherAlarmEndpoint();
         alarmEndpoint.setAlarmService(alarmService);
 
@@ -71,7 +72,7 @@ public class WeatherAlarmEndpointTest {
 
     @Test
     public void testHandleRequestForAlarm() throws Exception {
-        IWeatherAlarmService alarmService = TestUtils.getMockAlarmService();
+        IWeatherAlarmService alarmService = getMockAlarmService();
         WeatherAlarmEndpoint alarmEndpoint = new WeatherAlarmEndpoint();
         alarmEndpoint.setAlarmService(alarmService);
         WeatherAlarm alarm = alarmService.getAlarms().get(0);
@@ -88,7 +89,7 @@ public class WeatherAlarmEndpointTest {
 
     @Test
     public void testHandleRequestForAlarmNotFound() throws Exception {
-        IWeatherAlarmService alarmService = TestUtils.getMockAlarmService();
+        IWeatherAlarmService alarmService = getMockAlarmService();
         WeatherAlarmEndpoint alarmEndpoint = new WeatherAlarmEndpoint();
         alarmEndpoint.setAlarmService(alarmService);
         WeatherAlarm alarm = alarmService.getAlarms().get(0);
@@ -104,11 +105,11 @@ public class WeatherAlarmEndpointTest {
 
     @Test
     public void testHandleRequestForAddAlarm() throws Exception {
-        IWeatherAlarmService alarmService = TestUtils.getEmptyAlarmService();
+        IWeatherAlarmService alarmService = getEmptyAlarmService();
         WeatherAlarmEndpoint alarmEndpoint = new WeatherAlarmEndpoint();
         alarmEndpoint.setAlarmService(alarmService);
 
-        WeatherAlarm alarm = TestUtils.createWeatherAlarm();
+        WeatherAlarm alarm = createWeatherAlarm();
 
         Capture<byte[]> written = EasyMock.newCapture();
         Capture<HttpResponseStatus> status = EasyMock.newCapture();
@@ -121,7 +122,7 @@ public class WeatherAlarmEndpointTest {
 
     @Test
     public void testHandleRequestForDeleteAlarm() throws Exception {
-        IWeatherAlarmService alarmService = TestUtils.getMockAlarmService();
+        IWeatherAlarmService alarmService = getMockAlarmService();
         WeatherAlarmEndpoint alarmEndpoint = new WeatherAlarmEndpoint();
         alarmEndpoint.setAlarmService(alarmService);
         WeatherAlarm alarm = alarmService.getAlarms().get(0);
@@ -138,7 +139,7 @@ public class WeatherAlarmEndpointTest {
 
     @Test
     public void testHandleRequestForDeleteAlarms() throws Exception {
-        IWeatherAlarmService alarmService = TestUtils.getMockAlarmService();
+        IWeatherAlarmService alarmService = getMockAlarmService();
         WeatherAlarmEndpoint alarmEndpoint = new WeatherAlarmEndpoint();
         alarmEndpoint.setAlarmService(alarmService);
         WeatherAlarm alarm = alarmService.getAlarms().get(0);
@@ -156,26 +157,4 @@ public class WeatherAlarmEndpointTest {
         return Observable.just(Unpooled.copiedBuffer(bytes));
     }
 
-    @SuppressWarnings("unchecked")
-    private HttpServerRequest<ByteBuf> createMockHttpServerRequest(HttpMethod method,
-                                                                   String uri,
-                                                                   Observable<ByteBuf> content) {
-        HttpServerRequest<ByteBuf> request = EasyMock.createMock(HttpServerRequest.class);
-        EasyMock.expect(request.getUri()).andReturn(uri).anyTimes();
-        EasyMock.expect(request.getHttpMethod()).andReturn(method).anyTimes();
-        EasyMock.expect(request.getContent()).andReturn(content).anyTimes();
-        EasyMock.replay(request);
-        return request;
-    }
-
-    @SuppressWarnings("unchecked")
-    private HttpServerResponse<ByteBuf> createMockHttpResponse(Capture<HttpResponseStatus> captureResponseStatus,
-                                                               Capture<byte[]> captureWrittenBytes) {
-        HttpServerResponse<ByteBuf> mockResponse = EasyMock.createMock(HttpServerResponse.class);
-        mockResponse.writeBytes(EasyMock.capture(captureWrittenBytes));
-        mockResponse.setStatus(EasyMock.capture(captureResponseStatus));
-        EasyMock.expect(mockResponse.close()).andReturn(Observable.empty()).anyTimes();
-        EasyMock.replay(mockResponse);
-        return mockResponse;
-    }
 }
