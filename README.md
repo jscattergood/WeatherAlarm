@@ -7,7 +7,7 @@ The implementation depends on Netflix OSS projects: karyon and ribbon, and the Y
 
 This application is currently under development and is not finished...
 
-Configuration is defined via config.properties file found in src/main/resources.
+Configuration is defined via config.properties file found in src/main/conf.
 
 JVM args can also be used for configuration or to override values defined in the config.properties file:
 
