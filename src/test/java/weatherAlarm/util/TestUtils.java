@@ -42,9 +42,15 @@ public class TestUtils {
     }
 
     public static IWeatherAlarmService getMockAlarmService() {
-        WeatherAlarm alarm = createWeatherAlarm();
+        return getMockAlarmService(1);
+    }
+
+    public static IWeatherAlarmService getMockAlarmService(int numberOfAlarms) {
         IWeatherAlarmService alarmService = new SimpleAlarmService(getMockConfigService());
-        alarmService.addAlarm(alarm);
+        for (int i = 0; i < numberOfAlarms; i++) {
+            WeatherAlarm alarm = createWeatherAlarm(i);
+            alarmService.addAlarm(alarm);
+        }
         return alarmService;
     }
 
@@ -53,7 +59,11 @@ public class TestUtils {
     }
 
     public static WeatherAlarm createWeatherAlarm() {
-        WeatherAlarm alarm = new WeatherAlarm("zero degrees");
+        return createWeatherAlarm(0);
+    }
+
+    public static WeatherAlarm createWeatherAlarm(int suffix) {
+        WeatherAlarm alarm = new WeatherAlarm("zero degrees " + suffix);
         alarm.setEmailAddress("joe@xyz.com");
         IntegerPredicate valuePredicate = new IntegerPredicate(PredicateEnum.GT, 0);
         alarm.setCriteriaFor(WeatherDataEnum.TEMPERATURE, valuePredicate);

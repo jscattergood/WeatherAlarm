@@ -26,6 +26,8 @@ import weatherAlarm.services.IWeatherAlarmService;
 import weatherAlarm.util.TestUtils;
 
 import java.time.Instant;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class is responsible for testing {@link weatherAlarm.handlers.AlarmFilterHandler}
@@ -43,6 +45,19 @@ public class AlarmFilterHandlerTest {
         stream.observe(FilterMatchEvent.class).forEach(event -> received[0] = true);
         stream.publish(Observable.just(new WeatherConditionEvent(conditions)));
         Assert.assertTrue("No event received", received[0]);
+    }
+
+    @Test
+    public void testEvaluateFilterMultipleMatchCriteria() throws InterruptedException {
+        int numberOfAlarms = 5;
+        final CountDownLatch received = new CountDownLatch(numberOfAlarms);
+        SubjectEventStream stream = new SubjectEventStream();
+        new AlarmFilterHandler(stream, TestUtils.getMockAlarmService(numberOfAlarms));
+        WeatherConditions conditions = new WeatherConditions();
+        conditions.setTemperature(1);
+        stream.observe(FilterMatchEvent.class).forEach(event -> received.countDown());
+        stream.publish(Observable.just(new WeatherConditionEvent(conditions)));
+        Assert.assertTrue("No event received", received.await(1, TimeUnit.SECONDS));
     }
 
     @Test
