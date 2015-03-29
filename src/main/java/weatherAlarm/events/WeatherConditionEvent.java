@@ -16,13 +16,9 @@
 
 package weatherAlarm.events;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import weatherAlarm.model.WeatherConditions;
-
-import java.io.IOException;
 
 /**
  * This event is used to signal that new {@link weatherAlarm.model.WeatherConditions} have been observed.
@@ -32,25 +28,6 @@ import java.io.IOException;
 public class WeatherConditionEvent implements IEvent {
     public static final Logger logger = LoggerFactory.getLogger(WeatherConditionEvent.class);
     private WeatherConditions conditions;
-
-    public WeatherConditionEvent(String jsonString) {
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            JsonNode root = mapper.readTree(jsonString);
-            conditions = new WeatherConditions();
-            conditions.setTemperature(root
-                            .get("query")
-                            .get("results")
-                            .get("channel")
-                            .get("item")
-                            .get("condition")
-                            .get("temp").asInt()
-            );
-        } catch (IOException e) {
-            logger.error("Could not create WeatherConditionEvent from JSON string", e);
-            throw new RuntimeException(e);
-        }
-    }
 
     public WeatherConditionEvent(WeatherConditions conditions) {
         this.conditions = conditions;

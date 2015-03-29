@@ -26,7 +26,7 @@ import weatherAlarm.events.IEventStream;
 import weatherAlarm.events.SubjectEventStream;
 import weatherAlarm.handlers.AlarmFilterHandler;
 import weatherAlarm.handlers.EmailNotificationHandler;
-import weatherAlarm.handlers.WeatherQueryHandler;
+import weatherAlarm.handlers.WUndergroundWeatherQueryHandler;
 import weatherAlarm.services.IConfigService;
 import weatherAlarm.services.IWeatherAlarmService;
 import weatherAlarm.services.PropertyConfigService;
@@ -58,7 +58,7 @@ public class WeatherAlarmModule extends AbstractModule {
         bind(IConfigService.class).to(PropertyConfigService.class);
         bind(IWeatherAlarmService.class).to(SimpleAlarmService.class);
         bind(IEventStream.class).to(SubjectEventStream.class);
-        bind(WeatherQueryHandler.class);
+        bind(WUndergroundWeatherQueryHandler.class);
         bind(AlarmFilterHandler.class);
         bind(EmailNotificationHandler.class);
 

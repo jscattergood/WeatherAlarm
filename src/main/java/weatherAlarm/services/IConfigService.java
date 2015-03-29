@@ -27,6 +27,7 @@ public interface IConfigService {
     String CONFIG_EMAIL_AUTH_PASS = "weatherAlarm.emailAuthPass";
     String CONFIG_INITIAL_ALARMS = "weatherAlarm.initialAlarms";
     String CONFIG_WEATHER_SERVICE_QUERY_INTERVAL = "weatherAlarm.weatherServiceQueryInterval";
+    String CONFIG_WEATHER_SERVICE_API_KEY = "weatherAlarm.weatherServiceApiKey";
 
     /**
      * Gets the configuration

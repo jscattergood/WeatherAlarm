@@ -31,6 +31,8 @@ import weatherAlarm.services.IConfigService;
 import weatherAlarm.services.IWeatherAlarmService;
 import weatherAlarm.services.SimpleAlarmService;
 
+import java.util.Map;
+
 /**
  * Utility class for reusable test scaffolding
  *
@@ -77,26 +79,13 @@ public class TestUtils {
         return configService;
     }
 
-    public static IConfigService getMockConfigService(String config, String value) {
+    public static IConfigService getMockConfigService(Map<String, String> inConfigs) {
         IConfigService configService = EasyMock.createNiceMock(IConfigService.class);
-        EasyMock.expect(configService.getConfigValue(config)).andReturn(value).anyTimes();
+        for (Map.Entry<String, String> entry : inConfigs.entrySet()) {
+            EasyMock.expect(configService.getConfigValue(entry.getKey())).andReturn(entry.getValue()).anyTimes();
+        }
         EasyMock.replay(configService);
         return configService;
-    }
-
-    public static String getMockJsonResult() {
-        return "{\"query\":{" +
-                "\"count\":1," +
-                "\"created\":\"2015-01-12T01:12:22Z\"," +
-                "\"lang\":\"en-US\"," +
-                "\"results\":{" +
-                "\"channel\":{" +
-                "\"item\":{" +
-                "\"condition\":{" +
-                "\"code\":\"34\"," +
-                "\"date\":\"Sun, 11 Jan 2015 4:52 pm PST\"," +
-                "\"temp\":\"56\"," +
-                "\"text\":\"Fair\"}}}}}}";
     }
 
     @SuppressWarnings("unchecked")

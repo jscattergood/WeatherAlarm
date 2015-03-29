@@ -22,10 +22,7 @@ import io.netty.buffer.Unpooled;
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 import rx.Observable;
 import weatherAlarm.events.IEventStream;
 import weatherAlarm.events.SubjectEventStream;
@@ -35,14 +32,15 @@ import weatherAlarm.services.IConfigService;
 import weatherAlarm.services.IWeatherAlarmService;
 import weatherAlarm.util.TestUtils;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
- * This class is responsible for testing {@link weatherAlarm.handlers.WeatherQueryHandler}
+ * Base class for weather query handler tests
  *
- * @author <a href="https://github.com/jscattergood">John Scattergood</a> 1/10/2015
+ * @author <a href="https://github.com/jscattergood">John Scattergood</a> 3/28/2015
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(WeatherQueryHandler.class)
-public class WeatherQueryHandlerTest {
+public abstract class AbstractWeatherQueryHandlerTest {
     @Test
     public void testRequestWeatherData() throws Exception {
         final boolean[] received = {false};
@@ -54,13 +52,21 @@ public class WeatherQueryHandlerTest {
         Assert.assertTrue("No event received", received[0]);
     }
 
+    protected abstract Class<? extends AbstractWeatherQueryHandler> getHandlerClass();
+
+    protected abstract String getMockJsonResult();
+
     private void createMockHandler(IEventStream stream) throws Exception {
         IWeatherAlarmService alarmService = TestUtils.getMockAlarmService();
         WeatherAlarm alarm = alarmService.getAlarms().get(0);
-        WeatherQueryHandler handler = PowerMock.createPartialMock(WeatherQueryHandler.class,
+        Map<String, String> configMap = new HashMap<>();
+        configMap.put(IConfigService.CONFIG_WEATHER_SERVICE_QUERY_INTERVAL, "1");
+        configMap.put(IConfigService.CONFIG_WEATHER_SERVICE_API_KEY, "1234567");
+        IConfigService mockConfigService = TestUtils.getMockConfigService(configMap);
+        AbstractWeatherQueryHandler handler = PowerMock.createPartialMock(getHandlerClass(),
                 new String[]{"buildRequest"},
                 stream,
-                TestUtils.getMockConfigService(IConfigService.CONFIG_WEATHER_SERVICE_QUERY_INTERVAL, "1"),
+                mockConfigService,
                 alarmService);
         PowerMock.expectPrivate(handler, "buildRequest", alarm.getLocation())
                 .andReturn(getMockRibbonRequest())
@@ -71,7 +77,7 @@ public class WeatherQueryHandlerTest {
     private RibbonRequest<ByteBuf> getMockRibbonRequest() {
         @SuppressWarnings("unchecked")
         RibbonRequest<ByteBuf> ribbonRequest = EasyMock.createMock(RibbonRequest.class);
-        ByteBuf byteBuf = Unpooled.copiedBuffer(TestUtils.getMockJsonResult().getBytes());
+        ByteBuf byteBuf = Unpooled.copiedBuffer(getMockJsonResult().getBytes());
         EasyMock.expect(ribbonRequest.observe())
                 .andReturn(Observable.just(byteBuf))
                 .anyTimes();
