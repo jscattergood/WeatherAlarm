@@ -33,7 +33,7 @@ import weatherAlarm.services.IConfigService;
 import weatherAlarm.services.IWeatherAlarmService;
 
 import java.nio.charset.Charset;
-import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -76,9 +76,9 @@ public abstract class AbstractWeatherQueryHandler extends EventHandler {
     }
 
     protected void requestWeatherData() {
-        List<String> locations = alarmService.getAlarms().stream()
+        Set<String> locations = alarmService.getAlarms().stream()
                 .map(WeatherAlarm::getLocation)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
         Observable<IEvent> event = Observable.from(locations)
                 .flatMap(location -> buildRequest(location)
                         .observe()
