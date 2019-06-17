@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 John Scattergood
+ * Copyright 2019 John Scattergood
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,8 +24,8 @@ import com.netflix.ribbon.http.HttpRequestTemplate;
 import com.netflix.ribbon.http.HttpResourceGroup;
 import io.netty.buffer.ByteBuf;
 import org.apache.commons.lang.StringUtils;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import weatherAlarm.events.IEventStream;
@@ -43,6 +43,7 @@ import java.net.URLEncoder;
  *
  * @author <a href="https://github.com/jscattergood">John Scattergood</a> 12/28/2014
  */
+@Deprecated
 @Singleton
 public class YahooWeatherQueryHandler extends AbstractWeatherQueryHandler {
     private static final Logger logger = LoggerFactory.getLogger(YahooWeatherQueryHandler.class);

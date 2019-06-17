@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 John Scattergood
+ * Copyright 2019 John Scattergood
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import weatherAlarm.events.IEventStream;
 import weatherAlarm.events.SubjectEventStream;
 import weatherAlarm.handlers.AlarmFilterHandler;
 import weatherAlarm.handlers.EmailNotificationHandler;
-import weatherAlarm.handlers.WUndergroundWeatherQueryHandler;
+import weatherAlarm.handlers.NationalWeatherServiceQueryHandler;
 import weatherAlarm.services.IConfigService;
 import weatherAlarm.services.IWeatherAlarmService;
 import weatherAlarm.services.PropertyConfigService;
@@ -58,7 +58,7 @@ public class WeatherAlarmModule extends AbstractModule {
         bind(IConfigService.class).to(PropertyConfigService.class);
         bind(IWeatherAlarmService.class).to(SimpleAlarmService.class);
         bind(IEventStream.class).to(SubjectEventStream.class);
-        bind(WUndergroundWeatherQueryHandler.class);
+        bind(NationalWeatherServiceQueryHandler.class);
         bind(AlarmFilterHandler.class);
         bind(EmailNotificationHandler.class);
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 John Scattergood
+ * Copyright 2019 John Scattergood
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,11 @@
 
 package weatherAlarm.model;
 
-import org.codehaus.jackson.annotate.JsonSubTypes;
-import org.codehaus.jackson.annotate.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import weatherAlarm.util.PredicateEnum;
 
-import static org.codehaus.jackson.annotate.JsonSubTypes.Type;
+import static com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 
 /**
  * This class represents predicate expression and the implementation

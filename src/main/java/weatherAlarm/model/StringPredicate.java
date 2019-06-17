@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 John Scattergood
+ * Copyright 2019 John Scattergood
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
 
 package weatherAlarm.model;
 
-import org.codehaus.jackson.annotate.JsonCreator;
-import org.codehaus.jackson.annotate.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import weatherAlarm.util.PredicateEnum;
 
 /**
