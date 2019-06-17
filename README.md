@@ -6,10 +6,13 @@ WeatherAlarm
 Sends alert messages when current conditions meet specified criteria, e.g. temperature.
 
 The implementation depends on Netflix OSS projects: karyon and ribbon
+
 Weather data may come from one of the following sources:
 * National Weather Service
-* ~~Yahoo Weather API~~ Note: Yahoo Weather API endpoint is shutdown.
-* ~~Weather Underground API~~ Note: Weather Underground API endpoint is shut down.
+* ~~Yahoo Weather API~~
+  - Note: Yahoo Weather API endpoint is shutdown.
+* ~~Weather Underground API~~
+  - Note: Weather Underground API endpoint is shut down.
 
 Configuration is defined via config.properties file found in src/main/conf.
 
