@@ -82,6 +82,10 @@ public class NationalWeatherServiceQueryHandler extends AbstractWeatherQueryHand
                     .get("properties")
                     .get("temperature")
                     .get("value").asDouble();
+            if (temperatureC <= 0) {
+                logger.error("Invalid temperature value in event:\n" + jsonString);
+                throw new RuntimeException("Invalid temperature value: " + temperatureC);
+            }
             Integer temperatureF = (int) Math.round(convertToFahrenheit(temperatureC));
             conditions.setTemperature(temperatureF);
             return new WeatherConditionEvent(conditions);
