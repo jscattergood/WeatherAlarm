@@ -8,6 +8,7 @@ Sends alert messages when current conditions meet specified criteria, e.g. tempe
 The implementation depends on Netflix OSS projects: karyon and ribbon
 
 Weather data may come from one of the following sources:
+* AccuWeather API
 * National Weather Service
 * ~~Yahoo Weather API~~
   - Note: Yahoo Weather API endpoint is shutdown.
