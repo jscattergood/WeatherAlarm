@@ -2,6 +2,8 @@ package weatherAlarm.handlers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.netflix.ribbon.ClientOptions;
 import com.netflix.ribbon.Ribbon;
 import com.netflix.ribbon.http.HttpRequestTemplate;
@@ -17,10 +19,17 @@ import weatherAlarm.services.IWeatherAlarmService;
 
 import java.io.IOException;
 
+/**
+ * This class is responsible for querying the AccuWeather service for the current conditions
+ *
+ * @author <a href="https://github.com/jscattergood">John Scattergood</a> 3/28/2015
+ */
+@Singleton
 public class AccuWeatherQueryHandler extends AbstractWeatherQueryHandler {
     private static final Logger logger = LoggerFactory.getLogger(AccuWeatherQueryHandler.class);
     private final String apiKey;
 
+    @Inject
     public AccuWeatherQueryHandler(IEventStream stream, IConfigService configService, IWeatherAlarmService weatherAlarmService) {
         super(stream, configService, weatherAlarmService);
         this.apiKey = configService.getConfigValue(IConfigService.CONFIG_WEATHER_SERVICE_API_KEY);
@@ -37,7 +46,8 @@ public class AccuWeatherQueryHandler extends AbstractWeatherQueryHandler {
             HttpResourceGroup group = getResourceGroup();
             cachedRequestTemplate = group.newTemplateBuilder("getWeatherByLocation")
                     .withMethod("GET")
-                    .withUriTemplate("/currentconditions/v1/{location}?apiKey="+ apiKey)
+                    .withUriTemplate("/currentconditions/v1/{location}?apikey="+ this.apiKey)
+                    .withHeader("Accept", "application/json")
                     .build();
         }
         return cachedRequestTemplate;

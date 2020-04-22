@@ -24,9 +24,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import weatherAlarm.events.IEventStream;
 import weatherAlarm.events.SubjectEventStream;
+import weatherAlarm.handlers.AccuWeatherQueryHandler;
 import weatherAlarm.handlers.AlarmFilterHandler;
 import weatherAlarm.handlers.EmailNotificationHandler;
-import weatherAlarm.handlers.NationalWeatherServiceQueryHandler;
 import weatherAlarm.services.IConfigService;
 import weatherAlarm.services.IWeatherAlarmService;
 import weatherAlarm.services.PropertyConfigService;
@@ -58,7 +58,7 @@ public class WeatherAlarmModule extends AbstractModule {
         bind(IConfigService.class).to(PropertyConfigService.class);
         bind(IWeatherAlarmService.class).to(SimpleAlarmService.class);
         bind(IEventStream.class).to(SubjectEventStream.class);
-        bind(NationalWeatherServiceQueryHandler.class);
+        bind(AccuWeatherQueryHandler.class);
         bind(AlarmFilterHandler.class);
         bind(EmailNotificationHandler.class);
 

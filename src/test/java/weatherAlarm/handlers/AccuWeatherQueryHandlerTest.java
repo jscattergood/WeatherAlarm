@@ -54,7 +54,7 @@ public class AccuWeatherQueryHandlerTest extends AbstractWeatherQueryHandlerTest
                 "        \"UnitType\": 17\n" +
                 "      },\n" +
                 "      \"Imperial\": {\n" +
-                "        \"Value\": 66,\n" +
+                "        \"Value\": 66.0,\n" +
                 "        \"Unit\": \"F\",\n" +
                 "        \"UnitType\": 18\n" +
                 "      }\n" +
